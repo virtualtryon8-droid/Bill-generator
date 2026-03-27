@@ -86,9 +86,6 @@
         .total-banner { background: var(--primary-color); color: white; margin: 40px -50px -50px -50px; padding: 30px 50px; text-align: right; }
         .total-banner .total-amount { color: white; }
         
-        /* --- FOOTER REMOVED --- */
-        /* Previous footer-note class removed */
-        
         /* Print */
         @media print {
             body { background: white; padding: 0; }
@@ -147,21 +144,23 @@
 
 <script>
     /* 
-       CLEAN INVOICE ENGINE
+       CORRECTED ENGINE
        --------------------
+       - Fixed Syntax Error.
        - Centered Letterhead.
        - Indian Currency (INR).
-       - NO FOOTER TEXT (Clean End).
+       - NO FOOTER TEXT.
     */
 
     const MAX_TEMPLATES = 54000; 
     const FONTS = ['Poppins', 'Montserrat', 'Raleway', 'Rubik', 'Lato', 'Open Sans', 'Playfair Display', 'Merriweather', 'Oswald', 'Cinzel'];
-    const DB_KEY = 'invoice_generator_clean_v1';
+    const DB_KEY = 'invoice_generator_center_v1';
     
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
     
     window.onload = function() {
-        document.getElementById('invDate").valueAsDate = new Date();
+        // CORRECTED LINE: Fixed quote mismatch
+        document.getElementById('invDate').valueAsDate = new Date();
         updateHistory();
     };
 
