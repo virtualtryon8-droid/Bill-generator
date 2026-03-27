@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colorful Professional Bill Generator</title>
+    <title>Professional Indian Bill Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Roboto+Mono:wght@400;500&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Poppins:wght@400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Poppins:wght@400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- BASE STYLES --- */
@@ -18,22 +18,20 @@
         h2 { margin-top: 0; font-size: 18px; color: #2c3e50; text-transform: uppercase; letter-spacing: 1px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12px; color: #555; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; transition: border 0.2s; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
         input:focus { border-color: #888; outline: none; }
         
         button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: transform 0.1s; }
         button:hover { transform: translateY(-1px); }
-        button:active { transform: translateY(1px); }
         
         .utility-btn { background: #aab; box-shadow: none; margin-top: 5px; font-size: 12px; background-image: none; }
         .utility-btn.danger { background: #e74c3c; }
         
         .client-list { margin-top: 20px; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px; }
-        .client-badge { display: inline-block; background: #f0f2f5; padding: 4px 8px; border-radius: 20px; font-size: 11px; margin: 2px; cursor: pointer; border: 1px solid #e1e4e8; }
-        .client-badge:hover { border-color: #bbb; background: #e4e6e9; }
+        .client-badge { display: inline-block; background: #f0f2f5; padding: 4px 8px; border-radius: 20px; font-size: 11px; margin: 2px; cursor: pointer; }
 
         /* --- PREVIEW PANEL --- */
-        .preview-panel { flex: 2; background: #eef1f5; padding: 30px; border-radius: 12px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.03); overflow: auto; display: flex; justify-content: center; align-items: flex-start; }
+        .preview-panel { flex: 2; background: #eef1f5; padding: 30px; border-radius: 12px; overflow: auto; display: flex; justify-content: center; align-items: flex-start; }
         
         /* --- CANVAS BASE --- */
         #invoice-canvas {
@@ -41,54 +39,55 @@
             font-family: var(--font-body); color: var(--text-color); 
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             -webkit-print-color-adjust: exact; print-color-adjust: exact;
-            border-radius: 4px;
+            padding: 50px;
         }
 
-        /* --- COLORFUL COMPONENT CLASSES --- */
+        /* --- HEADER: STRICTLY CENTERED --- */
+        .letterhead-center {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .letterhead-center h1 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 32px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .letterhead-center .address {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #666;
+            font-weight: 400;
+        }
+        .style-ornament { display: inline-block; width: 50px; height: 2px; background: var(--primary-color); margin-bottom: 10px; }
+
+        /* --- BODY LAYOUT VARIATIONS --- */
+        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
+        .layout-grid .box { background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary-color); }
         
-        /* Containers */
-        .cont-standard { padding: 50px; }
-        .cont-frame-box { padding: 0; background: white; }
-        .cont-frame-box .border-art { border: 8px solid var(--primary-color); margin: 20px; height: calc(100% - 40px); box-sizing: border-box; padding: 40px; position: relative; }
-        .cont-frame-box .border-art::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border: 2px solid var(--accent-color); pointer-events: none; }
-
-        /* Headers */
-        .head-bold-bar { margin: -50px -50px 40px -50px; padding: 40px 50px; background: var(--primary-color); color: white; display: flex; justify-content: space-between; align-items: center; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
-        .head-bold-bar h1 { margin: 0; font-size: 28px; letter-spacing: 1px; font-weight: 700; }
+        .layout-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        .layout-table th { background: var(--primary-color); color: white; padding: 12px; text-align: left; }
+        .layout-table td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        .head-accent-card { display: flex; margin-bottom: 40px; }
-        .head-accent-card .left-strip { width: 10px; background: var(--primary-color); border-radius: 5px 0 0 5px; }
-        .head-accent-card .content { flex: 1; background: var(--accent-color); padding: 20px; border-radius: 0 5px 5px 0; }
+        .layout-card { margin-top: 30px; border: 1px solid #eee; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        .head-circle-badge { text-align: center; margin-bottom: 30px; position: relative; }
-        .head-circle-badge .circle { width: 80px; height: 80px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 auto 10px auto; box-shadow: 0 5px 15px var(--accent-color); }
+        .layout-list { margin-top: 30px; width: 100%; }
+        .layout-list .row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #ccc; }
 
-        /* Tables */
-        .table-colorful { width: 100%; border-collapse: collapse; margin: 30px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .table-colorful th { background: var(--primary-color); color: white; text-align: left; padding: 15px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .table-colorful td { background: #fff; padding: 15px; border-bottom: 1px solid #f0f0f0; }
-        .table-colorful tr:last-child td { border-bottom: none; }
-
-        .table-minimal-lines { width: 100%; margin: 30px 0; }
-        .table-minimal-lines th { text-align: left; color: #888; font-size: 11px; padding: 10px 0; border-bottom: 2px solid var(--primary-color); }
-        .table-minimal-lines td { padding: 15px 0; border-bottom: 1px solid #eee; }
-
-        /* Totals */
-        .total-card-right { margin-left: auto; width: 300px; background: linear-gradient(135deg, var(--accent-color) 0%, #fff 100%); padding: 20px; border-radius: 10px; border-left: 5px solid var(--primary-color); margin-top: 30px; }
-        .total-card-right .big { font-size: 26px; color: var(--primary-color); font-weight: 700; margin-top: 5px; }
-
-        .total-full-banner { background: var(--primary-color); color: white; margin: 40px -50px -50px -50px; padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; }
-        .total-full-banner .big { font-size: 32px; font-weight: 700; }
-
-        .total-stamp-vibrant { display: inline-block; padding: 15px 30px; border: 3px solid var(--primary-color); color: var(--primary-color); border-radius: 50px; transform: rotate(-5deg); margin-top: 30px; margin-left: auto; box-shadow: 0 5px 15px var(--accent-color); }
+        /* --- TOTAL SECTIONS --- */
+        .total-section-right { text-align: right; margin-top: 40px; }
+        .total-label { font-size: 12px; color: #888; text-transform: uppercase; }
+        .total-amount { font-size: 28px; font-weight: 700; color: var(--primary-color); font-family: var(--font-heading); }
         
-        /* Footer */
-        .footer-simple { margin-top: 40px; text-align: center; font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 20px; }
-
-        /* Helpers */
-        .badge-pill { background: var(--accent-color); color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 11px; }
-        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
-        .meta-box { background: #fafafa; padding: 15px; border-radius: 8px; border-left: 3px solid #eee; }
+        .total-banner { background: var(--primary-color); color: white; margin: 40px -50px -50px -50px; padding: 30px 50px; text-align: right; }
+        .total-banner .total-amount { color: white; }
+        
+        /* --- FOOTER REMOVED --- */
+        /* Previous footer-note class removed */
         
         /* Print */
         @media print {
@@ -105,13 +104,13 @@
 
 <div class="container">
     <div class="input-panel">
-        <h2>Colorful Bill Gen</h2>
+        <h2>Bill Generator</h2>
         <div class="form-group">
             <label>Person / Company Name *</label>
-            <input type="text" id="pName" placeholder="Enter unique name">
+            <input type="text" id="pName" placeholder="Enter Name">
         </div>
         <div class="form-group">
-            <label>Your Address</label>
+            <label>Address</label>
             <textarea id="pAddress" rows="2">Hyderabad, Telangana, India</textarea>
         </div>
         <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
@@ -135,9 +134,9 @@
             <label>Amount (INR)</label>
             <input type="number" id="amt" value="15000">
         </div>
-        <button onclick="processInvoice()">Generate Professional Bill</button>
+        <button onclick="processInvoice()">Generate Bill</button>
         <button class="utility-btn" onclick="window.print()">Print / PDF</button>
-        <button class="utility-btn danger" onclick="resetAll()" style="margin-top:15px; opacity:0.8; font-size:10px;">Reset Database</button>
+        <button class="utility-btn danger" onclick="resetAll()" style="margin-top:15px;">Reset Database</button>
         <div class="client-list" id="historyBox"></div>
     </div>
 
@@ -148,21 +147,21 @@
 
 <script>
     /* 
-       COLORFUL PROFESSIONAL ENGINE v3.0
-       ---------------------------------
-       - Generates 100+ Professional Layouts.
-       - Dynamic Color Palettes (Primary + Matching Accent).
-       - Vibrant headers, tables, and total blocks.
+       CLEAN INVOICE ENGINE
+       --------------------
+       - Centered Letterhead.
+       - Indian Currency (INR).
+       - NO FOOTER TEXT (Clean End).
     */
 
     const MAX_TEMPLATES = 54000; 
-    const FONTS = ['Poppins', 'Montserrat', 'Raleway', 'Rubik', 'Lato', 'Open Sans', 'Playfair Display', 'Merriweather', 'Roboto Mono', 'Oswald'];
-    const DB_KEY = 'invoice_generator_color_v1';
+    const FONTS = ['Poppins', 'Montserrat', 'Raleway', 'Rubik', 'Lato', 'Open Sans', 'Playfair Display', 'Merriweather', 'Oswald', 'Cinzel'];
+    const DB_KEY = 'invoice_generator_clean_v1';
     
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
     
     window.onload = function() {
-        document.getElementById('invDate').valueAsDate = new Date();
+        document.getElementById('invDate").valueAsDate = new Date();
         updateHistory();
     };
 
@@ -186,6 +185,11 @@
         renderInvoice(templateId);
     }
 
+    // Indian Numbering System Formatter
+    function formatINR(amount) {
+        return '₹ ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
     function renderInvoice(id) {
         const container = document.getElementById('invoice-canvas');
         const data = {
@@ -199,180 +203,154 @@
         };
 
         // --- PROCEDURAL GENERATION ---
-        const structureIndex = id % 100; // 0-99 structures
+        const structureIndex = id % 100;
         
-        // 1. COLOR PALETTE GENERATION (The "Colorful" part)
-        // We generate a Hue (0-360), then derive a professional Palette.
-        // Palette styles: 
-        // 0: Vibrant (High Saturation)
-        // 1: Pastel (Low Saturation, High Lightness)
-        // 2: Deep (Medium Saturation, Low Lightness)
-        
+        // 1. COLORS
         const hue = (id * 137.508) % 360;
-        const paletteStyle = id % 3;
+        const styleType = id % 3;
+        let primaryColor;
         
-        let primaryColor, accentColor;
-        
-        if (paletteStyle === 0) {
-            // Vibrant Modern
-            primaryColor = `hsl(${hue}, 70%, 50%)`;
-            accentColor = `hsl(${hue}, 60%, 92%)`;
-        } else if (paletteStyle === 1) {
-            // Soft Professional
-            primaryColor = `hsl(${hue}, 40%, 45%)`;
-            accentColor = `hsl(${hue}, 30%, 94%)`;
-        } else {
-            // Deep & Bold
-            primaryColor = `hsl(${hue}, 65%, 40%)`;
-            accentColor = `hsl(${hue}, 50%, 85%)`;
-        }
+        if (styleType === 0) primaryColor = `hsl(${hue}, 70%, 45%)`;
+        else if (styleType === 1) primaryColor = `hsl(${hue}, 50%, 35%)`;
+        else primaryColor = `hsl(${hue}, 15%, 25%)`;
 
-        // 2. FONT SELECTION
-        const fontId = Math.floor(id / 20) % FONTS.length;
+        // 2. FONTS
+        const fontId = Math.floor(id / 10) % FONTS.length;
         const selectedFont = FONTS[fontId];
 
-        // Apply CSS Variables
         container.style.setProperty('--primary-color', primaryColor);
-        container.style.setProperty('--accent-color', accentColor);
         container.style.setProperty('--font-heading', `'${selectedFont}', sans-serif`);
         container.style.setProperty('--font-body', `'${selectedFont}', sans-serif`);
         
-        // 3. STRUCTURE SELECTION
-        const contIdx = structureIndex % 3; // 0: Standard, 1: Frame, 2: Standard
-        const headIdx = Math.floor(structureIndex / 5) % 3; // 0: BoldBar, 1: AccentCard, 2: Circle
-        const tableIdx = Math.floor(structureIndex / 20) % 2; // 0: Colorful, 1: Minimal
-        const totalIdx = Math.floor(structureIndex / 50) % 3; // 0: Card, 1: Banner, 2: Stamp
+        // 3. BODY LAYOUT SELECTION
+        const layoutIdx = Math.floor(structureIndex / 20) % 4;
 
         // --- HTML CONSTRUCTION ---
-        let html = '';
 
-        // 1. CONTAINER START
-        if (contIdx === 1) {
-            html += `<div class="cont-frame-box"><div class="border-art">`;
+        // 1. CENTERED LETTERHEAD
+        let html = `
+            <div class="letterhead-center">
+                <div class="style-ornament"></div>
+                <h1>${data.name}</h1>
+                <div class="address">${data.address}</div>
+            </div>
+        `;
+
+        // 2. INVOICE META INFO
+        html += `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                <div>
+                    <strong style="color:#888; font-size:11px; text-transform:uppercase;">Billed To</strong><br>
+                    <span style="font-size:15px; font-weight:600;">${data.client}</span>
+                </div>
+                <div style="text-align:right;">
+                    <table style="font-size:13px;">
+                        <tr><td style="padding:3px 10px; color:#888;">Invoice #:</td><td style="font-weight:600;">${data.inv}</td></tr>
+                        <tr><td style="padding:3px 10px; color:#888;">Date:</td><td style="font-weight:600;">${data.date}</td></tr>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        // 3. BODY LAYOUT
+        const displayAmt = formatINR(data.amt);
+
+        if (layoutIdx === 0) {
+            html += `
+                <div class="layout-grid">
+                    <div class="box">
+                        <strong style="color:var(--primary-color); font-size:12px;">SERVICE DESCRIPTION</strong>
+                        <p style="margin:10px 0 0 0; font-size:14px;">${data.desc}</p>
+                    </div>
+                    <div class="box" style="text-align:right;">
+                        <strong style="color:var(--primary-color); font-size:12px;">AMOUNT</strong>
+                        <p style="margin:10px 0 0 0; font-size:18px; font-weight:600;">${displayAmt}</p>
+                    </div>
+                </div>
+            `;
+        } else if (layoutIdx === 1) {
+            html += `
+                <table class="layout-table">
+                    <thead>
+                        <tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${data.desc}</td>
+                            <td>1</td>
+                            <td>${displayAmt}</td>
+                            <td style="font-weight:700;">${displayAmt}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        } else if (layoutIdx === 2) {
+            html += `
+                <div class="layout-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                        <div style="font-size:12px; color:#888;">Service Item</div>
+                        <div style="font-size:12px; color:#888;">Amount</div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size:16px; font-weight:600;">${data.desc}</div>
+                        <div style="font-size:16px; color:var(--primary-color); font-weight:700;">${displayAmt}</div>
+                    </div>
+                </div>
+            `;
         } else {
-            html += `<div class="cont-standard">`;
+            html += `
+                <div class="layout-list">
+                    <div class="row">
+                        <span style="color:#666;">Description</span>
+                        <span>${data.desc}</span>
+                    </div>
+                    <div class="row" style="border:none;">
+                        <span style="color:#666;">Amount</span>
+                        <span style="font-weight:700;">${displayAmt}</span>
+                    </div>
+                </div>
+            `;
         }
 
-        // 2. HEADER
-        if (headIdx === 0) {
-            // Bold Bar
-            html += `<div class="head-bold-bar">
-                        <div><h1>${data.name}</h1><div style="font-size:12px; opacity:0.9; margin-top:5px;">${data.address}</div></div>
-                        <div style="text-align:right;"><span class="badge-pill" style="background:white; color:var(--primary-color);">INVOICE</span><br><div style="font-size:18px; margin-top:5px;">${data.inv}</div><div style="font-size:12px; opacity:0.8;">${data.date}</div></div>
-                     </div>`;
-            // Client Info below header
-            html += `<div class="meta-box" style="background:var(--accent-color); border-left:none; margin-bottom:40px;">
-                        <strong style="color:var(--primary-color); font-size:10px; text-transform:uppercase;">Billed To</strong><br>
-                        <span style="font-size:16px; font-weight:600;">${data.client}</span>
-                     </div>`;
-        } 
-        else if (headIdx === 1) {
-            // Accent Card
-            html += `<div class="head-accent-card">
-                        <div class="left-strip"></div>
-                        <div class="content">
-                            <h1 style="margin:0; color:var(--primary-color);">${data.name}</h1>
-                            <div style="font-size:12px; color:#666;">${data.address}</div>
-                        </div>
-                     </div>`;
-            html += `<div style="display:flex; justify-content:space-between; margin-bottom:30px;">
-                        <div class="meta-box" style="background:#fff; border-left: 3px solid var(--primary-color);">
-                            <strong style="color:#888; font-size:10px;">CLIENT</strong><br>${data.client}
-                        </div>
-                        <div class="meta-box" style="background:#fff; border-left: 3px solid var(--primary-color); text-align:right;">
-                            <span class="badge-pill" style="background:var(--primary-color); color:white;">INV ${data.inv}</span><br>${data.date}
-                        </div>
-                     </div>`;
-        }
-        else {
-            // Circle Badge Center
-            html += `<div class="head-circle-badge">
-                        <div class="circle">INV</div>
-                        <h1 style="color:var(--primary-color); margin:0;">${data.name}</h1>
-                        <div style="font-size:12px; color:#888;">${data.address}</div>
-                     </div>`;
-            html += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:20px; margin-bottom:30px;">
-                        <div><strong>Bill To:</strong><br>${data.client}</div>
-                        <div style="text-align:right;"><strong>Date:</strong> ${data.date}<br><strong>Invoice #:</strong> ${data.inv}</div>
-                     </div>`;
-        }
-
-        // 3. TABLE
-        if (tableIdx === 0) {
-            // Colorful Table
-            html += `<table class="table-colorful">
-                        <thead><tr><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
-                        <tbody>
-                            <tr><td>${data.desc}</td><td style="text-align:right; font-weight:600;">₹ ${data.amt.toLocaleString('en-IN')}</td></tr>
-                        </tbody>
-                     </table>`;
+        // 4. TOTAL SECTION
+        const totalStyle = id % 3;
+        
+        if (totalStyle === 0) {
+            html += `
+                <div class="total-section-right">
+                    <div style="background:#f5f5f5; display:inline-block; padding:10px 20px; border-radius:4px; border-left:4px solid var(--primary-color);">
+                        <div class="total-label">Grand Total</div>
+                        <div class="total-amount">${displayAmt}</div>
+                    </div>
+                </div>
+            `;
+        } else if (totalStyle === 1) {
+            html += `
+                <div style="text-align:right; margin-top:40px;">
+                    <div style="border-top:2px solid var(--primary-color); display:inline-block; padding-top:10px;">
+                        <span style="font-size:12px; color:#888;">Total Due: </span>
+                        <span style="font-size:24px; font-weight:bold; color:var(--primary-color);">${displayAmt}</span>
+                    </div>
+                </div>
+            `;
         } else {
-            // Minimal Lines
-            html += `<table class="table-minimal-lines">
-                        <thead><tr><th>Service Description</th><th style="text-align:right;">Amount</th></tr></thead>
-                        <tbody>
-                            <tr><td>${data.desc}</td><td style="text-align:right; font-weight:600;">₹ ${data.amt.toLocaleString('en-IN')}</td></tr>
-                        </tbody>
-                     </table>`;
+            html += `
+                <div class="total-banner">
+                    <span class="total-label" style="color:rgba(255,255,255,0.8);">Grand Total</span><br>
+                    <span class="total-amount">${displayAmt}</span>
+                </div>
+            `;
         }
 
-        // 4. TOTAL
-        if (totalIdx === 0) {
-            // Card Right
-            html += `<div style="display:flex; justify-content:flex-end;">
-                        <div class="total-card-right">
-                            <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#888;">Total Due</div>
-                            <div class="big">₹ ${data.amt.toLocaleString('en-IN')}</div>
-                        </div>
-                     </div>`;
-        } 
-        else if (totalIdx === 1) {
-            // Full Banner
-            html += `</div><div class="total-full-banner"> <!-- Close cont-standard to span width -->
-                        <span>Total Amount Due</span>
-                        <span class="big">₹ ${data.amt.toLocaleString('en-IN')}</span>
-                     </div>`;
-                     // Re-open div if needed for structure logic or just let it close naturally
-        }
-        else {
-            // Stamp
-            html += `<div style="display:flex; justify-content:flex-end;">
-                        <div class="total-stamp-vibrant">
-                            <div style="font-size:10px; letter-spacing:1px;">TOTAL</div>
-                            <div style="font-size:20px; font-weight:700;">₹ ${data.amt.toLocaleString('en-IN')}</div>
-                        </div>
-                     </div>`;
-        }
-
-        // 5. FOOTER
-        if (totalIdx !== 1) { // Footer inside container for most layouts
-            html += `<div class="footer-simple">Payment is due within 30 days. Thank you for your business.</div>`;
-        } else {
-            // For banner layout, footer is after banner
-             html += `<div style="text-align:center; padding:20px; font-size:10px; color:#888;">Payment is due within 30 days. Thank you for your business.</div>`;
-        }
-
-        // CONTAINER END
-        if (contIdx === 1) {
-            // If we opened border-art div, close it
-            if(totalIdx !== 1) html += `</div></div>`; // close border-art and cont-frame-box
-            else html += `</div>`; // border art was closed by banner logic logic (simplified here)
-        } else {
-            // If standard
-            if(totalIdx === 1) {
-                // Standard div was closed by banner logic
-            } else {
-                html += `</div>`; // close standard div
-            }
-        }
-
+        // 5. FOOTER REMOVED COMPLETELY
+        
         container.innerHTML = html;
     }
 
     function updateHistory() {
         const box = document.getElementById('historyBox');
         const keys = Object.keys(db);
-        if(keys.length === 0) { box.innerHTML = "<div style='color:#aaa; font-size:11px;'>No templates assigned yet.</div>"; return; }
+        if(keys.length === 0) { box.innerHTML = "<div style='color:#aaa; font-size:11px;'>No history.</div>"; return; }
         box.innerHTML = `<div style="font-size:11px; color:#666; margin-bottom:5px;">History:</div>`;
         keys.forEach(k => {
             let badge = document.createElement('span');
@@ -383,7 +361,7 @@
         });
     }
 
-    function resetAll() { if(confirm("Reset database?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
+    function resetAll() { if(confirm("Reset?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
     function formatDate(d) { if(!d) return '-'; return new Date(d).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }); }
 </script>
 </body>
