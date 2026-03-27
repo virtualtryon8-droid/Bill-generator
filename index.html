@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Structural Invoice Generator</title>
+    <title>Professional Bill Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Roboto+Mono:wght@400;500&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Source+Sans+Pro:wght@400;600&family=PT+Serif:wght@400;700&family=Courier+Prime:wght@400;700&family=Bebas+Neue&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- BASE & INPUT PANEL --- */
+        /* --- SCREEN STYLES --- */
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; font-size: 14px; }
         .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
         .input-panel { flex: 1; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: fit-content; }
@@ -26,12 +26,15 @@
         .client-badge:hover { background: #d0d0d0; }
 
         /* --- PREVIEW PANEL --- */
-        .preview-panel { flex: 2; background: white; padding: 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; position: relative;}
+        .preview-panel { flex: 2; background: #e5e5e5; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: auto; display: flex; justify-content: center; align-items: flex-start; }
         
         /* --- DYNAMIC CANVAS BASE --- */
         #invoice-canvas {
-            background: white; min-height: 800px; box-sizing: border-box; position: relative; overflow: hidden;
-            font-family: var(--font-body); color: var(--text-color); display: flex; flex-direction: column;
+            background: white; width: 210mm; min-height: 297mm; box-sizing: border-box; position: relative; overflow: hidden;
+            font-family: var(--font-body); color: var(--text-color); 
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            /* Critical for printing colors */
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
         }
         
         /* --- UNIVERSAL COMPONENT CLASSES --- */
@@ -88,12 +91,35 @@
         /* Helpers */
         .badge { background: var(--primary-color); color: white; padding: 4px 10px; border-radius: 3px; font-size: 10px; text-transform: uppercase; }
         .divider { height: 1px; background: #eee; margin: 20px 0; }
-        .new-tag { position: absolute; top: 0; right: 0; background: #27ae60; color: white; padding: 5px 10px; font-size: 10px; z-index: 100; }
 
+        /* --- PRINT STYLES --- */
         @media print {
-            body { background: white; }
-            .input-panel { display: none; }
-            .preview-panel { box-shadow: none; }
+            /* Reset layout for printing */
+            body { background: white; padding: 0; margin: 0; }
+            .container { display: block; }
+            
+            /* Hide everything except the bill */
+            .input-panel { display: none !important; }
+            .preview-panel { 
+                padding: 0; 
+                box-shadow: none; 
+                background: white;
+                display: block;
+                width: 100%;
+                height: auto;
+            }
+            
+            /* Ensure the canvas fits the page */
+            #invoice-canvas {
+                width: 100% !important;
+                min-height: auto !important;
+                box-shadow: none !important;
+                border: none;
+                margin: 0;
+            }
+            
+            /* Force background colors to print */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
@@ -101,7 +127,7 @@
 
 <div class="container">
     <div class="input-panel">
-        <h2>Generator Panel</h2>
+        <h2>Bill Generator</h2>
         <div class="form-group">
             <label>Person / Company Name *</label>
             <input type="text" id="pName" placeholder="Enter unique name">
@@ -144,16 +170,16 @@
 
 <script>
     /* 
-       PARAMETRIC LAYOUT ENGINE v2.0
-       -----------------------------
-       Generates 100 Unique Structural Layouts (IDs 0-99).
-       Formula: 5 Containers x 4 Headers x 5 Bodies x 4 Totals = 100 combinations.
-       ID maps to a specific combination deterministically.
+       PARAMETRIC LAYOUT ENGINE v2.0 (Print Optimized)
+       ------------------------------------------------
+       - Generates 100 Unique Structural Layouts (IDs 0-99).
+       - No "New Template" text.
+       - Optimized for clean printing.
     */
 
     const MAX_TEMPLATES = 54000; 
     const FONTS = ['Montserrat', 'Lato', 'Playfair Display', 'Roboto Mono', 'Merriweather', 'Open Sans', 'Oswald', 'Raleway', 'Source Sans Pro', 'PT Serif', 'Bebas Neue', 'Libre Baskerville'];
-    const DB_KEY = 'invoice_generator_mega_v1';
+    const DB_KEY = 'invoice_generator_final_v1';
     
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
     
@@ -167,25 +193,22 @@
         if (!name) return alert("Please enter a Person/Company Name.");
 
         let templateId = db[name];
-        let isNew = false;
 
         if (templateId === undefined) {
             const usedIds = Object.values(db);
-            // Limit check for infinite random colors, but we ensure structure logic works
             let newId;
             do { newId = Math.floor(Math.random() * MAX_TEMPLATES); } while (usedIds.includes(newId));
 
             db[name] = newId;
             localStorage.setItem(DB_KEY, JSON.stringify(db));
             templateId = newId;
-            isNew = true;
             updateHistory();
         }
 
-        renderInvoice(templateId, isNew);
+        renderInvoice(templateId);
     }
 
-    function renderInvoice(id, isNew) {
+    function renderInvoice(id) {
         const container = document.getElementById('invoice-canvas');
         const data = {
             name: document.getElementById('pName').value,
@@ -198,15 +221,11 @@
         };
 
         // --- DECODING STRUCTURE (0-99) ---
-        // We map ID 0-99 to specific layout indices.
-        // If ID > 99, we wrap around (modulus) for structure, but keep unique color/font.
         const structureIndex = id % 100;
-
-        // Indices for components (0-4, 0-3, etc)
         const contIdx = structureIndex % 5;
         const headIdx = Math.floor(structureIndex / 5) % 4;
         const bodyIdx = Math.floor(structureIndex / 20) % 5;
-        const totIdx = Math.floor(structureIndex / 50) % 4; // Adjusted logic for better spread
+        const totIdx = Math.floor(structureIndex / 50) % 4;
 
         // --- COLOR & FONT GENERATION ---
         const hue = (id * 137.508) % 360;
@@ -224,15 +243,12 @@
         container.style.setProperty('--font-body', `'${selectedFont}', sans-serif`);
         
         // --- HTML CONSTRUCTION ---
-        
         let html = '';
-        if(isNew) html += '<div class="new-tag">NEW TEMPLATE GENERATED</div>';
 
         // 1. CONTAINER START
         const containerDefs = ['cont-standard', 'cont-boxed', 'cont-border-frame', 'cont-sidebar', 'cont-standard'];
         const cClass = containerDefs[contIdx];
         
-        // Sidebar requires specific wrapping
         if (cClass === 'cont-sidebar') {
             html += `<div class="${cClass}"><div class="side">`;
             html += `<h2 style="color:white; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:10px;">${data.name}</h2>`;
@@ -251,7 +267,7 @@
             html += `<div class="${cClass}">`;
         }
 
-        // 2. HEADER (Skip for Sidebar as it's handled above)
+        // 2. HEADER
         if (cClass !== 'cont-sidebar') {
             const headerDefs = ['head-classic', 'head-big-center', 'head-overlay', 'head-minimal'];
             const hClass = headerDefs[headIdx];
@@ -304,11 +320,9 @@
         html += `</div>`;
 
         // 4. TOTAL
-        // Skip visual total if Sidebar or Receipt (handled differently)
         const totalDefs = ['total-right-block', 'total-bottom-bar', 'total-stamp', 'total-clean'];
         const tClass = totalDefs[totIdx];
 
-        // Logic to avoid duplication if body already showed total clearly or layout conflicts
         if (cClass === 'cont-sidebar') {
              html += `<div style="margin-top:auto; text-align:right; border-top:1px solid #eee; padding-top:20px;">
                         <span style="font-size:12px; color:#888;">Total Due</span><br>
@@ -360,7 +374,7 @@
         });
     }
 
-    function resetAll() { if(confirm("Reset database?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
+    function resetAll() { if(confirm("Reset database? All unique templates will be cleared.")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
     function formatDate(d) { if(!d) return '-'; return new Date(d).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }); }
 </script>
 </body>
