@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Indian Bill Generator</title>
+    <!-- Changed Title to be professional and clean for PDF naming -->
+    <title>Tax Invoice</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Poppins:wght@400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
@@ -143,15 +144,6 @@
 </div>
 
 <script>
-    /* 
-       CORRECTED ENGINE
-       --------------------
-       - Fixed Syntax Error.
-       - Centered Letterhead.
-       - Indian Currency (INR).
-       - NO FOOTER TEXT.
-    */
-
     const MAX_TEMPLATES = 54000; 
     const FONTS = ['Poppins', 'Montserrat', 'Raleway', 'Rubik', 'Lato', 'Open Sans', 'Playfair Display', 'Merriweather', 'Oswald', 'Cinzel'];
     const DB_KEY = 'invoice_generator_center_v1';
@@ -159,7 +151,6 @@
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
     
     window.onload = function() {
-        // CORRECTED LINE: Fixed quote mismatch
         document.getElementById('invDate').valueAsDate = new Date();
         updateHistory();
     };
@@ -200,6 +191,9 @@
             desc: document.getElementById('desc').value,
             amt: parseFloat(document.getElementById('amt').value) || 0
         };
+        
+        // UPDATE PRINT DOCUMENT TITLE (Removes "Professional Indian Bill Generator" from PDF metadata)
+        document.title = "Invoice_" + data.inv;
 
         // --- PROCEDURAL GENERATION ---
         const structureIndex = id % 100;
@@ -226,7 +220,7 @@
 
         // --- HTML CONSTRUCTION ---
 
-        // 1. CENTERED LETTERHEAD
+        // 1. CENTERED LETTERHEAD (No unwanted text)
         let html = `
             <div class="letterhead-center">
                 <div class="style-ornament"></div>
@@ -235,7 +229,7 @@
             </div>
         `;
 
-        // 2. INVOICE META INFO
+        // 2. INVOICE META INFO (Date without time)
         html += `
             <div style="display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
                 <div>
@@ -340,8 +334,6 @@
                 </div>
             `;
         }
-
-        // 5. FOOTER REMOVED COMPLETELY
         
         container.innerHTML = html;
     }
@@ -361,7 +353,15 @@
     }
 
     function resetAll() { if(confirm("Reset?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
-    function formatDate(d) { if(!d) return '-'; return new Date(d).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }); }
+    
+    // STRICT DATE FORMATTING (No Time)
+    function formatDate(d) {
+        if(!d) return '-';
+        const dateObj = new Date(d);
+        // Options specifically exclude time
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return dateObj.toLocaleDateString('en-IN', options); 
+    }
 </script>
 </body>
 </html>
