@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Changed Title to be professional and clean for PDF naming -->
     <title>Tax Invoice</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,9 +40,11 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             -webkit-print-color-adjust: exact; print-color-adjust: exact;
             padding: 50px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- HEADER: STRICTLY CENTERED --- */
+        /* --- HEADER --- */
         .letterhead-center {
             text-align: center;
             margin-bottom: 40px;
@@ -84,16 +85,44 @@
         .total-label { font-size: 12px; color: #888; text-transform: uppercase; }
         .total-amount { font-size: 28px; font-weight: 700; color: var(--primary-color); font-family: var(--font-heading); }
         
-        .total-banner { background: var(--primary-color); color: white; margin: 40px -50px -50px -50px; padding: 30px 50px; text-align: right; }
+        .total-banner { background: var(--primary-color); color: white; margin: 40px -50px 0 -50px; padding: 30px 50px; text-align: right; }
         .total-banner .total-amount { color: white; }
         
+        /* --- NEW FEATURES --- */
+        .amount-words-box {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #444;
+        }
+        
+        .signature-area {
+            margin-top: auto; /* Push to bottom */
+            padding-top: 60px;
+            width: 250px;
+            margin-left: auto;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        .signature-text {
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+        }
+
         /* Print */
         @media print {
             body { background: white; padding: 0; }
             .container { display: block; }
             .input-panel { display: none !important; }
             .preview-panel { padding: 0; background: white; box-shadow: none; }
-            #invoice-canvas { box-shadow: none; width: 100%; min-height: auto; border-radius: 0; }
+            #invoice-canvas { box-shadow: none; width: 100%; min-height: auto; border-radius: 0; padding: 40px; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
@@ -104,18 +133,24 @@
     <div class="input-panel">
         <h2>Bill Generator</h2>
         <div class="form-group">
-            <label>Person / Company Name *</label>
-            <input type="text" id="pName" placeholder="Enter Name">
+            <label>Your Name / Company *</label>
+            <input type="text" id="pName" placeholder="Your Business Name">
         </div>
         <div class="form-group">
-            <label>Address</label>
+            <label>Your Address</label>
             <textarea id="pAddress" rows="2">Hyderabad, Telangana, India</textarea>
         </div>
         <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
+        
         <div class="form-group">
             <label>Client Name</label>
             <input type="text" id="cName" value="VASAVI SILKS PRIVATE LIMITED">
         </div>
+        <div class="form-group">
+            <label>Client Address</label>
+            <textarea id="cAddress" rows="2">Mumbai, Maharashtra, India</textarea>
+        </div>
+        
         <div class="form-group">
             <label>Invoice #</label>
             <input type="text" id="invNo" placeholder="INV-001">
@@ -146,7 +181,7 @@
 <script>
     const MAX_TEMPLATES = 54000; 
     const FONTS = ['Poppins', 'Montserrat', 'Raleway', 'Rubik', 'Lato', 'Open Sans', 'Playfair Display', 'Merriweather', 'Oswald', 'Cinzel'];
-    const DB_KEY = 'invoice_generator_center_v1';
+    const DB_KEY = 'invoice_generator_center_v2';
     
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
     
@@ -157,7 +192,7 @@
 
     function processInvoice() {
         const name = document.getElementById('pName').value.trim();
-        if (!name) return alert("Please enter a Person/Company Name.");
+        if (!name) return alert("Please enter Your Name/Company.");
 
         let templateId = db[name];
 
@@ -180,19 +215,79 @@
         return '₹ ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    // Number to Words (Indian System)
+    function numberToWords(num) {
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        
+        if (num === 0) return 'Zero';
+
+        function convertLessThanOneThousand(n) {
+            if (n === 0) return '';
+            if (n < 20) return ones[n];
+            const t = Math.floor(n / 10);
+            const rem = n % 10;
+            return tens[t] + (rem !== 0 ? ' ' + ones[rem] : '');
+        }
+
+        function convert(n) {
+            if (n === 0) return '';
+            
+            let result = '';
+            
+            // Crores
+            if (n >= 10000000) {
+                result += convertLessThanOneThousand(Math.floor(n / 10000000)) + ' Crore ';
+                n %= 10000000;
+            }
+            // Lakhs
+            if (n >= 100000) {
+                result += convertLessThanOneThousand(Math.floor(n / 100000)) + ' Lakh ';
+                n %= 100000;
+            }
+            // Thousands
+            if (n >= 1000) {
+                result += convertLessThanOneThousand(Math.floor(n / 1000)) + ' Thousand ';
+                n %= 1000;
+            }
+            // Hundreds
+            if (n >= 100) {
+                result += ones[Math.floor(n / 100)] + ' Hundred ';
+                n %= 100;
+            }
+            // Remainder
+            if (n > 0) {
+                // Add "and" for last part if needed (optional stylistic choice)
+                // result += 'and ';
+                result += convertLessThanOneThousand(n);
+            }
+            return result.trim();
+        }
+
+        const numInt = Math.floor(num);
+        const numDec = Math.round((num - numInt) * 100);
+
+        let words = convert(numInt) + ' Rupees';
+        if (numDec > 0) {
+            words += ' and ' + convert(numDec) + ' Paise';
+        }
+        return words + ' Only';
+    }
+
     function renderInvoice(id) {
         const container = document.getElementById('invoice-canvas');
         const data = {
             name: document.getElementById('pName').value,
             address: document.getElementById('pAddress').value,
             client: document.getElementById('cName').value,
+            clientAddress: document.getElementById('cAddress').value,
             inv: document.getElementById('invNo').value || '001',
             date: formatDate(document.getElementById('invDate').value),
             desc: document.getElementById('desc').value,
             amt: parseFloat(document.getElementById('amt').value) || 0
         };
         
-        // UPDATE PRINT DOCUMENT TITLE (Removes "Professional Indian Bill Generator" from PDF metadata)
+        // UPDATE PRINT DOCUMENT TITLE
         document.title = "Invoice_" + data.inv;
 
         // --- PROCEDURAL GENERATION ---
@@ -220,7 +315,7 @@
 
         // --- HTML CONSTRUCTION ---
 
-        // 1. CENTERED LETTERHEAD (No unwanted text)
+        // 1. CENTERED LETTERHEAD
         let html = `
             <div class="letterhead-center">
                 <div class="style-ornament"></div>
@@ -229,12 +324,13 @@
             </div>
         `;
 
-        // 2. INVOICE META INFO (Date without time)
+        // 2. INVOICE META INFO (With Client Address)
         html += `
             <div style="display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
                 <div>
                     <strong style="color:#888; font-size:11px; text-transform:uppercase;">Billed To</strong><br>
                     <span style="font-size:15px; font-weight:600;">${data.client}</span>
+                    <div style="font-size:12px; color:#555; margin-top:4px; white-space: pre-wrap;">${data.clientAddress}</div>
                 </div>
                 <div style="text-align:right;">
                     <table style="font-size:13px;">
@@ -247,12 +343,13 @@
 
         // 3. BODY LAYOUT
         const displayAmt = formatINR(data.amt);
+        const amtWords = numberToWords(data.amt);
 
         if (layoutIdx === 0) {
             html += `
                 <div class="layout-grid">
                     <div class="box">
-                        <strong style="color:var(--primary-color); font-size:12px;">SERVICE DESCRIPTION</strong>
+                        <strong style="color:var(--primary-color); font-size:12px;">DESCRIPTION</strong>
                         <p style="margin:10px 0 0 0; font-size:14px;">${data.desc}</p>
                     </div>
                     <div class="box" style="text-align:right;">
@@ -281,7 +378,7 @@
             html += `
                 <div class="layout-card">
                     <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                        <div style="font-size:12px; color:#888;">Service Item</div>
+                        <div style="font-size:12px; color:#888;">Description</div>
                         <div style="font-size:12px; color:#888;">Amount</div>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -305,9 +402,12 @@
             `;
         }
 
-        // 4. TOTAL SECTION
+        // 4. TOTAL SECTION (Modified to handle banner vs non-banner logic)
         const totalStyle = id % 3;
         
+        // Amount in Words HTML
+        const wordsHtml = `<div class="amount-words-box">Rupees in words: <strong>${amtWords}</strong></div>`;
+
         if (totalStyle === 0) {
             html += `
                 <div class="total-section-right">
@@ -316,6 +416,7 @@
                         <div class="total-amount">${displayAmt}</div>
                     </div>
                 </div>
+                ${wordsHtml}
             `;
         } else if (totalStyle === 1) {
             html += `
@@ -325,6 +426,7 @@
                         <span style="font-size:24px; font-weight:bold; color:var(--primary-color);">${displayAmt}</span>
                     </div>
                 </div>
+                ${wordsHtml}
             `;
         } else {
             html += `
@@ -332,8 +434,19 @@
                     <span class="total-label" style="color:rgba(255,255,255,0.8);">Grand Total</span><br>
                     <span class="total-amount">${displayAmt}</span>
                 </div>
+                <!-- For banner style, put words inside the content flow but after banner -->
+                <div style="margin-top: 20px;">${wordsHtml}</div>
             `;
         }
+
+        // 5. SIGNATURE AREA
+        html += `
+            <div class="signature-area">
+                <div class="signature-line"></div>
+                <div class="signature-text">Authorized Signatory</div>
+                <div style="font-size: 10px; color: #888; margin-top: 2px;">For ${data.name}</div>
+            </div>
+        `;
         
         container.innerHTML = html;
     }
@@ -354,11 +467,9 @@
 
     function resetAll() { if(confirm("Reset?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
     
-    // STRICT DATE FORMATTING (No Time)
     function formatDate(d) {
         if(!d) return '-';
         const dateObj = new Date(d);
-        // Options specifically exclude time
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return dateObj.toLocaleDateString('en-IN', options); 
     }
