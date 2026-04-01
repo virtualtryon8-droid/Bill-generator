@@ -9,11 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Poppins:wght@400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- BASE STYLES --- */
         body { font-family: 'Segoe UI', sans-serif; background-color: #eef1f5; margin: 0; padding: 20px; color: #333; font-size: 14px; }
         .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
         
-        /* --- INPUT PANEL --- */
         .input-panel { flex: 1; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); height: fit-content; }
         h2 { margin-top: 0; font-size: 18px; color: #2c3e50; text-transform: uppercase; letter-spacing: 1px; }
         .form-group { margin-bottom: 15px; }
@@ -26,97 +24,52 @@
         
         .utility-btn { background: #aab; box-shadow: none; margin-top: 5px; font-size: 12px; background-image: none; }
         .utility-btn.danger { background: #e74c3c; }
-        
+
         .client-list { margin-top: 20px; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px; }
         .client-badge { display: inline-block; background: #f0f2f5; padding: 4px 8px; border-radius: 20px; font-size: 11px; margin: 2px; cursor: pointer; }
 
-        /* --- PREVIEW PANEL --- */
         .preview-panel { flex: 2; background: #eef1f5; padding: 30px; border-radius: 12px; overflow: auto; display: flex; justify-content: center; align-items: flex-start; }
         
-        /* --- CANVAS BASE --- */
         #invoice-canvas {
             background: white; width: 210mm; min-height: 297mm; box-sizing: border-box; position: relative; overflow: hidden;
             font-family: var(--font-body); color: var(--text-color); 
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             -webkit-print-color-adjust: exact; print-color-adjust: exact;
             padding: 50px;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
 
-        /* --- HEADER --- */
-        .letterhead-center {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--primary-color);
-        }
-        .letterhead-center h1 {
-            margin: 0;
-            font-family: var(--font-heading);
-            font-size: 32px;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .letterhead-center .address {
-            margin-top: 5px;
-            font-size: 13px;
-            color: #666;
-            font-weight: 400;
-        }
+        .letterhead-center { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid var(--primary-color); }
+        .letterhead-center h1 { margin: 0; font-family: var(--font-heading); font-size: 32px; color: var(--primary-color); text-transform: uppercase; letter-spacing: 1px; }
+        .letterhead-center .address { margin-top: 5px; font-size: 13px; color: #666; font-weight: 400; }
         .style-ornament { display: inline-block; width: 50px; height: 2px; background: var(--primary-color); margin-bottom: 10px; }
 
-        /* --- BODY LAYOUT VARIATIONS --- */
         .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
         .layout-grid .box { background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary-color); }
-        
         .layout-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
         .layout-table th { background: var(--primary-color); color: white; padding: 12px; text-align: left; }
         .layout-table td { padding: 12px; border-bottom: 1px solid #eee; }
-        
         .layout-card { margin-top: 30px; border: 1px solid #eee; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        
         .layout-list { margin-top: 30px; width: 100%; }
         .layout-list .row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #ccc; }
 
-        /* --- TOTAL SECTIONS --- */
         .total-section-right { text-align: right; margin-top: 40px; }
         .total-label { font-size: 12px; color: #888; text-transform: uppercase; }
         .total-amount { font-size: 28px; font-weight: 700; color: var(--primary-color); font-family: var(--font-heading); }
-        
         .total-banner { background: var(--primary-color); color: white; margin: 40px -50px 0 -50px; padding: 30px 50px; text-align: right; }
         .total-banner .total-amount { color: white; }
-        
-        /* --- NEW FEATURES --- */
-        .amount-words-box {
-            margin-top: 20px;
-            padding: 10px;
-            background: #f8f9fa;
-            border: 1px dashed #ccc;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #444;
-        }
-        
+
+        .amount-words-box { margin-top: 20px; padding: 10px; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; font-size: 13px; color: #444; }
+
         .signature-area {
-            margin-top: auto; /* Push to bottom */
-            padding-top: 60px;
+            margin-top: 50px;
             width: 250px;
             margin-left: auto;
             text-align: center;
         }
-        .signature-line {
-            border-top: 1px solid #333;
-            margin-bottom: 5px;
-        }
-        .signature-text {
-            font-size: 12px;
-            color: #555;
-            font-weight: 600;
-        }
+        .signature-line { border-top: 1px solid #333; margin-bottom: 5px; }
+        .signature-text { font-size: 12px; color: #555; font-weight: 600; }
 
-        /* Print */
         @media print {
             body { background: white; padding: 0; }
             .container { display: block; }
@@ -144,11 +97,12 @@
         
         <div class="form-group">
             <label>Client Name</label>
-            <input type="text" id="cName" value="VASAVI SILKS PRIVATE LIMITED">
+            <input type="text" id="cName" value="VASAVI SILKS PVT LTD">
         </div>
         <div class="form-group">
             <label>Client Address</label>
-            <textarea id="cAddress" rows="2">Mumbai, Maharashtra, India</textarea>
+            <textarea id="cAddress" rows="3">Edaravari Street, Rama Chandra Rao Pet
+Eluru - 534002</textarea>
         </div>
         
         <div class="form-group">
@@ -167,6 +121,7 @@
             <label>Amount (INR)</label>
             <input type="number" id="amt" value="15000">
         </div>
+
         <button onclick="processInvoice()">Generate Bill</button>
         <button class="utility-btn" onclick="window.print()">Print / PDF</button>
         <button class="utility-btn danger" onclick="resetAll()" style="margin-top:15px;">Reset Database</button>
@@ -195,82 +150,45 @@
         if (!name) return alert("Please enter Your Name/Company.");
 
         let templateId = db[name];
-
         if (templateId === undefined) {
             const usedIds = Object.values(db);
             let newId;
             do { newId = Math.floor(Math.random() * MAX_TEMPLATES); } while (usedIds.includes(newId));
-
             db[name] = newId;
             localStorage.setItem(DB_KEY, JSON.stringify(db));
             templateId = newId;
             updateHistory();
         }
-
         renderInvoice(templateId);
     }
 
-    // Indian Numbering System Formatter
     function formatINR(amount) {
         return '₹ ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Number to Words (Indian System)
     function numberToWords(num) {
         const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
         const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-        
         if (num === 0) return 'Zero';
-
         function convertLessThanOneThousand(n) {
             if (n === 0) return '';
             if (n < 20) return ones[n];
-            const t = Math.floor(n / 10);
-            const rem = n % 10;
+            const t = Math.floor(n / 10), rem = n % 10;
             return tens[t] + (rem !== 0 ? ' ' + ones[rem] : '');
         }
-
         function convert(n) {
             if (n === 0) return '';
-            
             let result = '';
-            
-            // Crores
-            if (n >= 10000000) {
-                result += convertLessThanOneThousand(Math.floor(n / 10000000)) + ' Crore ';
-                n %= 10000000;
-            }
-            // Lakhs
-            if (n >= 100000) {
-                result += convertLessThanOneThousand(Math.floor(n / 100000)) + ' Lakh ';
-                n %= 100000;
-            }
-            // Thousands
-            if (n >= 1000) {
-                result += convertLessThanOneThousand(Math.floor(n / 1000)) + ' Thousand ';
-                n %= 1000;
-            }
-            // Hundreds
-            if (n >= 100) {
-                result += ones[Math.floor(n / 100)] + ' Hundred ';
-                n %= 100;
-            }
-            // Remainder
-            if (n > 0) {
-                // Add "and" for last part if needed (optional stylistic choice)
-                // result += 'and ';
-                result += convertLessThanOneThousand(n);
-            }
+            if (n >= 10000000) { result += convertLessThanOneThousand(Math.floor(n / 10000000)) + ' Crore '; n %= 10000000; }
+            if (n >= 100000) { result += convertLessThanOneThousand(Math.floor(n / 100000)) + ' Lakh '; n %= 100000; }
+            if (n >= 1000) { result += convertLessThanOneThousand(Math.floor(n / 1000)) + ' Thousand '; n %= 1000; }
+            if (n >= 100) { result += ones[Math.floor(n / 100)] + ' Hundred '; n %= 100; }
+            if (n > 0) result += convertLessThanOneThousand(n);
             return result.trim();
         }
-
-        const numInt = Math.floor(num);
-        const numDec = Math.round((num - numInt) * 100);
-
+        const numInt = Math.floor(num), numDec = Math.round((num - numInt) * 100);
         let words = convert(numInt) + ' Rupees';
-        if (numDec > 0) {
-            words += ' and ' + convert(numDec) + ' Paise';
-        }
+        if (numDec > 0) words += ' and ' + convert(numDec) + ' Paise';
         return words + ' Only';
     }
 
@@ -287,22 +205,16 @@
             amt: parseFloat(document.getElementById('amt').value) || 0
         };
         
-        // UPDATE PRINT DOCUMENT TITLE
         document.title = "Invoice_" + data.inv;
 
-        // --- PROCEDURAL GENERATION ---
         const structureIndex = id % 100;
-        
-        // 1. COLORS
         const hue = (id * 137.508) % 360;
         const styleType = id % 3;
         let primaryColor;
-        
         if (styleType === 0) primaryColor = `hsl(${hue}, 70%, 45%)`;
         else if (styleType === 1) primaryColor = `hsl(${hue}, 50%, 35%)`;
         else primaryColor = `hsl(${hue}, 15%, 25%)`;
 
-        // 2. FONTS
         const fontId = Math.floor(id / 10) % FONTS.length;
         const selectedFont = FONTS[fontId];
 
@@ -310,12 +222,16 @@
         container.style.setProperty('--font-heading', `'${selectedFont}', sans-serif`);
         container.style.setProperty('--font-body', `'${selectedFont}', sans-serif`);
         
-        // 3. BODY LAYOUT SELECTION
         const layoutIdx = Math.floor(structureIndex / 20) % 4;
 
-        // --- HTML CONSTRUCTION ---
+        const signatureBlock = `
+            <div class="signature-area">
+                <div class="signature-line"></div>
+                <div class="signature-text">Authorized Signatory</div>
+                <div style="font-size: 10px; color: #888; margin-top: 2px;">For ${data.name}</div>
+            </div>
+        `;
 
-        // 1. CENTERED LETTERHEAD
         let html = `
             <div class="letterhead-center">
                 <div class="style-ornament"></div>
@@ -324,7 +240,6 @@
             </div>
         `;
 
-        // 2. INVOICE META INFO (With Client Address)
         html += `
             <div style="display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
                 <div>
@@ -341,9 +256,9 @@
             </div>
         `;
 
-        // 3. BODY LAYOUT
         const displayAmt = formatINR(data.amt);
         const amtWords = numberToWords(data.amt);
+        const wordsHtml = `<div class="amount-words-box">Rupees in words: <strong>${amtWords}</strong></div>`;
 
         if (layoutIdx === 0) {
             html += `
@@ -361,16 +276,9 @@
         } else if (layoutIdx === 1) {
             html += `
                 <table class="layout-table">
-                    <thead>
-                        <tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>
-                    </thead>
+                    <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td>${data.desc}</td>
-                            <td>1</td>
-                            <td>${displayAmt}</td>
-                            <td style="font-weight:700;">${displayAmt}</td>
-                        </tr>
+                        <tr><td>${data.desc}</td><td>1</td><td>${displayAmt}</td><td style="font-weight:700;">${displayAmt}</td></tr>
                     </tbody>
                 </table>
             `;
@@ -390,23 +298,13 @@
         } else {
             html += `
                 <div class="layout-list">
-                    <div class="row">
-                        <span style="color:#666;">Description</span>
-                        <span>${data.desc}</span>
-                    </div>
-                    <div class="row" style="border:none;">
-                        <span style="color:#666;">Amount</span>
-                        <span style="font-weight:700;">${displayAmt}</span>
-                    </div>
+                    <div class="row"><span style="color:#666;">Description</span><span>${data.desc}</span></div>
+                    <div class="row" style="border:none;"><span style="color:#666;">Amount</span><span style="font-weight:700;">${displayAmt}</span></div>
                 </div>
             `;
         }
 
-        // 4. TOTAL SECTION (Modified to handle banner vs non-banner logic)
         const totalStyle = id % 3;
-        
-        // Amount in Words HTML
-        const wordsHtml = `<div class="amount-words-box">Rupees in words: <strong>${amtWords}</strong></div>`;
 
         if (totalStyle === 0) {
             html += `
@@ -417,6 +315,7 @@
                     </div>
                 </div>
                 ${wordsHtml}
+                ${signatureBlock}
             `;
         } else if (totalStyle === 1) {
             html += `
@@ -427,6 +326,7 @@
                     </div>
                 </div>
                 ${wordsHtml}
+                ${signatureBlock}
             `;
         } else {
             html += `
@@ -434,27 +334,18 @@
                     <span class="total-label" style="color:rgba(255,255,255,0.8);">Grand Total</span><br>
                     <span class="total-amount">${displayAmt}</span>
                 </div>
-                <!-- For banner style, put words inside the content flow but after banner -->
                 <div style="margin-top: 20px;">${wordsHtml}</div>
+                ${signatureBlock}
             `;
         }
 
-        // 5. SIGNATURE AREA
-        html += `
-            <div class="signature-area">
-                <div class="signature-line"></div>
-                <div class="signature-text">Authorized Signatory</div>
-                <div style="font-size: 10px; color: #888; margin-top: 2px;">For ${data.name}</div>
-            </div>
-        `;
-        
         container.innerHTML = html;
     }
 
     function updateHistory() {
         const box = document.getElementById('historyBox');
         const keys = Object.keys(db);
-        if(keys.length === 0) { box.innerHTML = "<div style='color:#aaa; font-size:11px;'>No history.</div>"; return; }
+        if (keys.length === 0) { box.innerHTML = "<div style='color:#aaa; font-size:11px;'>No history.</div>"; return; }
         box.innerHTML = `<div style="font-size:11px; color:#666; margin-bottom:5px;">History:</div>`;
         keys.forEach(k => {
             let badge = document.createElement('span');
@@ -465,13 +356,11 @@
         });
     }
 
-    function resetAll() { if(confirm("Reset?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
+    function resetAll() { if (confirm("Reset?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
     
     function formatDate(d) {
-        if(!d) return '-';
-        const dateObj = new Date(d);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return dateObj.toLocaleDateString('en-IN', options); 
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 </script>
 </body>
