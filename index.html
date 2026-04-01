@@ -6,362 +6,259 @@
     <title>Tax Invoice</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Poppins:wght@400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600&family=Merriweather:wght@300;700&family=Open+Sans:wght@400;600&family=Oswald:wght@300;500&family=Raleway:wght@400;600&family=Poppins:wght@400;600;700&family=Rubik:wght@400;500;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #eef1f5; margin: 0; padding: 20px; color: #333; font-size: 14px; }
-        .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
-        
-        .input-panel { flex: 1; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); height: fit-content; }
-        h2 { margin-top: 0; font-size: 18px; color: #2c3e50; text-transform: uppercase; letter-spacing: 1px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12px; color: #555; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-        input:focus { border-color: #888; outline: none; }
-        
-        button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: transform 0.1s; }
-        button:hover { transform: translateY(-1px); }
-        
-        .utility-btn { background: #aab; box-shadow: none; margin-top: 5px; font-size: 12px; background-image: none; }
-        .utility-btn.danger { background: #e74c3c; }
-
-        .client-list { margin-top: 20px; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px; }
-        .client-badge { display: inline-block; background: #f0f2f5; padding: 4px 8px; border-radius: 20px; font-size: 11px; margin: 2px; cursor: pointer; }
-
-        .preview-panel { flex: 2; background: #eef1f5; padding: 30px; border-radius: 12px; overflow: auto; display: flex; justify-content: center; align-items: flex-start; }
-        
-        #invoice-canvas {
-            background: white; width: 210mm; min-height: 297mm; box-sizing: border-box; position: relative; overflow: hidden;
-            font-family: var(--font-body); color: var(--text-color); 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            -webkit-print-color-adjust: exact; print-color-adjust: exact;
-            padding: 50px;
-            display: flex; flex-direction: column;
-        }
-
-        .letterhead-center { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid var(--primary-color); }
-        .letterhead-center h1 { margin: 0; font-family: var(--font-heading); font-size: 32px; color: var(--primary-color); text-transform: uppercase; letter-spacing: 1px; }
-        .letterhead-center .address { margin-top: 5px; font-size: 13px; color: #666; font-weight: 400; }
-        .style-ornament { display: inline-block; width: 50px; height: 2px; background: var(--primary-color); margin-bottom: 10px; }
-
-        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
-        .layout-grid .box { background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary-color); }
-        .layout-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        .layout-table th { background: var(--primary-color); color: white; padding: 12px; text-align: left; }
-        .layout-table td { padding: 12px; border-bottom: 1px solid #eee; }
-        .layout-card { margin-top: 30px; border: 1px solid #eee; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .layout-list { margin-top: 30px; width: 100%; }
-        .layout-list .row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed #ccc; }
-
-        .total-section-right { text-align: right; margin-top: 40px; }
-        .total-label { font-size: 12px; color: #888; text-transform: uppercase; }
-        .total-amount { font-size: 28px; font-weight: 700; color: var(--primary-color); font-family: var(--font-heading); }
-        .total-banner { background: var(--primary-color); color: white; margin: 40px -50px 0 -50px; padding: 30px 50px; text-align: right; }
-        .total-banner .total-amount { color: white; }
-
-        .amount-words-box { margin-top: 20px; padding: 10px; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; font-size: 13px; color: #444; }
-
-        .signature-area {
-            margin-top: 50px;
-            width: 250px;
-            margin-left: auto;
-            text-align: center;
-        }
-        .signature-line { border-top: 1px solid #333; margin-bottom: 5px; }
-        .signature-text { font-size: 12px; color: #555; font-weight: 600; }
-
-        @media print {
-            body { background: white; padding: 0; }
-            .container { display: block; }
-            .input-panel { display: none !important; }
-            .preview-panel { padding: 0; background: white; box-shadow: none; }
-            #invoice-canvas { box-shadow: none; width: 100%; min-height: auto; border-radius: 0; padding: 40px; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Segoe UI',sans-serif;background:#eef1f5;padding:20px;color:#333;font-size:14px;}
+        .wrap{display:flex;gap:20px;max-width:1200px;margin:0 auto;}
+        .side{flex:0 0 310px;background:#fff;padding:22px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.05);height:fit-content;position:sticky;top:20px;}
+        .side h2{font-size:16px;color:#2c3e50;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
+        .fg{margin-bottom:10px;}
+        .fg label{display:block;font-weight:600;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+        .fg input,.fg textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-family:inherit;font-size:13px;}
+        .fg input:focus,.fg textarea:focus{border-color:#667eea;outline:none;box-shadow:0 0 0 3px rgba(102,126,234,.1);}
+        .fg textarea{resize:vertical;}
+        .sep{border:0;border-top:1px solid #eee;margin:12px 0;}
+        .btn{width:100%;padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;transition:all .15s;}
+        .btn-g{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;box-shadow:0 4px 15px rgba(102,126,234,.3);}
+        .btn-g:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(102,126,234,.4);}
+        .btn-t{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;box-shadow:0 4px 12px rgba(245,87,108,.2);margin-top:7px;}
+        .btn-t:hover{box-shadow:0 6px 18px rgba(245,87,108,.3);}
+        .btn-s{background:#f0f2f5;color:#444;border:1px solid #ddd;margin-top:7px;}
+        .btn-s:hover{background:#e4e7eb;}
+        .btn-d{background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;margin-top:7px;}
+        .btn-d:hover{background:#fbd0d0;}
+        .hist{margin-top:12px;max-height:160px;overflow-y:auto;border-top:1px solid #eee;padding-top:8px;}
+        .hist-t{font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+        .badge{display:inline-block;background:#f0f2f5;padding:3px 8px;border-radius:20px;font-size:10px;margin:2px;cursor:pointer;color:#666;transition:all .2s;}
+        .badge:hover{background:#667eea;color:#fff;}
+        .prev{flex:1;background:#eef1f5;padding:25px;border-radius:12px;overflow:auto;display:flex;justify-content:center;align-items:flex-start;min-height:calc(100vh - 40px);}
+        #cv{background:#fff;width:210mm;min-height:297mm;position:relative;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.12);-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:50px;display:flex;flex-direction:column;}
+        .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+        .ov.on{display:flex;}
+        .mdl{background:#fff;border-radius:16px;width:93%;max-width:1100px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,.25);}
+        .mdl-h{padding:16px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;}
+        .mdl-h h3{font-size:16px;color:#2c3e50;}
+        .mdl-x{background:none;border:none;font-size:22px;cursor:pointer;color:#999;padding:2px 8px;border-radius:6px;line-height:1;}
+        .mdl-x:hover{color:#333;background:#f0f0f0;}
+        .mdl-s{padding:12px 22px;border-bottom:1px solid #f0f0f0;}
+        .mdl-s input{width:100%;padding:9px 14px;border:2px solid #eee;border-radius:10px;font-size:13px;}
+        .mdl-s input:focus{border-color:#667eea;outline:none;}
+        .mdl-b{padding:16px 22px;overflow-y:auto;flex:1;}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+        .card{border:2px solid #eee;border-radius:10px;overflow:hidden;cursor:pointer;transition:all .15s;background:#fff;position:relative;}
+        .card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);border-color:#ccc;}
+        .card.sel{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.15);}
+        .card-top{height:40px;display:flex;align-items:center;justify-content:center;}
+        .card-top span{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#fff;opacity:.9;}
+        .card-mid{height:60px;padding:6px;background:#fafbfc;position:relative;overflow:hidden;}
+        .card-name{padding:6px 8px;font-size:9px;font-weight:700;color:#444;text-align:center;border-top:1px solid #f0f0f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .card .chk{position:absolute;top:4px;right:4px;width:17px;height:17px;background:#667eea;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;z-index:1;}
+        .card.sel .chk{display:flex;}
+        @media print{body{background:#fff;padding:0;}.wrap{display:block;}.side{display:none!important;}.prev{padding:0;background:#fff;}#cv{box-shadow:none;width:100%;min-height:auto;}.ov{display:none!important;}}
+        @media(max-width:900px){.wrap{flex-direction:column;}.side{flex:none;position:static;width:100%;}#cv{width:100%;min-height:auto;padding:30px;}.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}.mdl{width:97%;max-height:90vh;}}
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="input-panel">
+<div class="wrap">
+    <div class="side">
         <h2>Bill Generator</h2>
-        <div class="form-group">
-            <label>Your Name / Company *</label>
-            <input type="text" id="pName" placeholder="Your Business Name">
-        </div>
-        <div class="form-group">
-            <label>Your Address</label>
-            <textarea id="pAddress" rows="2">Hyderabad, Telangana, India</textarea>
-        </div>
-        <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
-        
-        <div class="form-group">
-            <label>Client Name</label>
-            <input type="text" id="cName" value="VASAVI SILKS PVT LTD">
-        </div>
-        <div class="form-group">
-            <label>Client Address</label>
-            <textarea id="cAddress" rows="3">Edaravari Street, Rama Chandra Rao Pet
-Eluru - 534002</textarea>
-        </div>
-        
-        <div class="form-group">
-            <label>Invoice #</label>
-            <input type="text" id="invNo" placeholder="INV-001">
-        </div>
-        <div class="form-group">
-            <label>Date</label>
-            <input type="date" id="invDate">
-        </div>
-        <div class="form-group">
-            <label>Description</label>
-            <textarea id="desc" rows="2">Professional Services Rendered</textarea>
-        </div>
-        <div class="form-group">
-            <label>Amount (INR)</label>
-            <input type="number" id="amt" value="15000">
-        </div>
-
-        <button onclick="processInvoice()">Generate Bill</button>
-        <button class="utility-btn" onclick="window.print()">Print / PDF</button>
-        <button class="utility-btn danger" onclick="resetAll()" style="margin-top:15px;">Reset Database</button>
-        <div class="client-list" id="historyBox"></div>
+        <div class="fg"><label>Your Name / Company</label><input type="text" id="pN" placeholder="Your Business Name"></div>
+        <div class="fg"><label>Your Address</label><textarea id="pA" rows="2">Hyderabad, Telangana, India</textarea></div>
+        <hr class="sep">
+        <div class="fg"><label>Client Name</label><input type="text" id="cN" value="VASAVI SILKS PVT LTD"></div>
+        <div class="fg"><label>Client Address</label><textarea id="cA" rows="3">Edaravari Street, Rama Chandra Rao Pet&#10;Eluru - 534002</textarea></div>
+        <hr class="sep">
+        <div class="fg"><label>Invoice #</label><input type="text" id="iN" placeholder="INV-001"></div>
+        <div class="fg"><label>Date</label><input type="date" id="iD"></div>
+        <div class="fg"><label>Description</label><textarea id="dS" rows="2">Professional Services Rendered</textarea></div>
+        <div class="fg"><label>Amount (INR)</label><input type="number" id="aM" value="15000"></div>
+        <button class="btn btn-g" onclick="go()">Generate Bill</button>
+        <button class="btn btn-t" id="tB" onclick="openM()">Choose Template</button>
+        <button class="btn btn-s" onclick="window.print()">Print / Save PDF</button>
+        <button class="btn btn-d" onclick="rst()">Reset Database</button>
+        <div class="hist" id="hB"></div>
     </div>
-
-    <div class="preview-panel">
-        <div id="invoice-canvas"></div>
+    <div class="prev"><div id="cv"></div></div>
+</div>
+<div class="ov" id="mO" onclick="if(event.target===this)closeM()">
+    <div class="mdl">
+        <div class="mdl-h"><h3>Select Template Style</h3><button class="mdl-x" onclick="closeM()">&times;</button></div>
+        <div class="mdl-s"><input type="text" id="tS" placeholder="Search templates..." oninput="flt(this.value)"></div>
+        <div class="mdl-b"><div class="grid" id="tG"></div></div>
     </div>
 </div>
 
 <script>
-    const MAX_TEMPLATES = 54000; 
-    const FONTS = ['Poppins', 'Montserrat', 'Raleway', 'Rubik', 'Lato', 'Open Sans', 'Playfair Display', 'Merriweather', 'Oswald', 'Cinzel'];
-    const DB_KEY = 'invoice_generator_center_v2';
-    
-    let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
-    
-    window.onload = function() {
-        document.getElementById('invDate').valueAsDate = new Date();
-        updateHistory();
-    };
+const FN=['Poppins','Montserrat','Raleway','Rubik','Lato','Open Sans','Playfair Display','Merriweather','Oswald','Cinzel'];
+const AJ=['Royal','Pure','Deep','Soft','Bright','Dark','Rich','Light','Warm','Cool','Bold','Subtle','Fresh','Crisp','Smooth','Sharp','Clean','Grand','Noble','Calm'];
+const NN=['Indigo','Emerald','Coral','Slate','Teal','Violet','Crimson','Olive','Navy','Jade','Onyx','Rose','Copper','Moss','Azure','Plum','Gold','Bronze','Ivory','Amber'];
+const DK='inv_gen_v5';
+let db=JSON.parse(localStorage.getItem(DK))||{};
+let sel=null;
 
-    function processInvoice() {
-        const name = document.getElementById('pName').value.trim();
-        if (!name) return alert("Please enter Your Name/Company.");
+Object.keys(db).forEach(k=>{if(typeof db[k]==='object')db[k]=db[k].t!==undefined?db[k].t%100:0;else if(db[k]>=100)db[k]=db[k]%100;});
+localStorage.setItem(DK,JSON.stringify(db));
 
-        let templateId = db[name];
-        if (templateId === undefined) {
-            const usedIds = Object.values(db);
-            let newId;
-            do { newId = Math.floor(Math.random() * MAX_TEMPLATES); } while (usedIds.includes(newId));
-            db[name] = newId;
-            localStorage.setItem(DB_KEY, JSON.stringify(db));
-            templateId = newId;
-            updateHistory();
-        }
-        renderInvoice(templateId);
+const T=[];
+for(let i=0;i<100;i++)T.push({id:i,nm:AJ[i%20]+' '+NN[(i*7)%20],h:i%10,b:(i*3)%10,t:(i*7)%10,hu:Math.round((i*137.508)%360),sa:[70,50,15,80,30][i%5],fn:i%10});
+
+window.onload=function(){document.getElementById('iD').valueAsDate=new Date();buildG();upH();ph();};
+
+function ph(){document.getElementById('cv').innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#ccc;"><div style="font-size:48px;margin-bottom:14px;">&#128196;</div><div style="font-size:15px;font-weight:600;color:#bbb;">No Invoice Generated</div><div style="font-size:12px;margin-top:5px;color:#ccc;">Enter details and click Generate Bill</div></div>';}
+
+function buildG(){
+    const g=document.getElementById('tG');g.innerHTML='';
+    T.forEach(t=>{
+        const d=document.createElement('div');
+        d.className='card'+(sel===t.id?' sel':'');
+        d.dataset.nm=t.nm.toLowerCase();
+        d.onclick=()=>pick(t.id);
+        const c='hsl('+t.hu+','+t.sa+'%,45%)';
+        d.innerHTML='<div class="chk">&#10003;</div><div class="card-top" style="background:'+c+';"><span>INVOICE</span></div><div class="card-mid">'+mP(t,c)+'</div><div class="card-name">'+t.nm+'</div>';
+        g.appendChild(d);
+    });
+}
+
+function mP(t,c){
+    const bb=[
+        '<div style="display:flex;gap:3px;height:100%;"><div style="flex:1;background:#e8e8e8;border-radius:2px;border-left:3px solid '+c+';"></div><div style="flex:1;background:#e8e8e8;border-radius:2px;border-right:3px solid '+c+';"></div></div>',
+        '<div style="display:flex;flex-direction:column;gap:3px;"><div style="height:5px;background:'+c+';border-radius:1px;opacity:.4;"></div><div style="height:3px;background:#ddd;border-radius:1px;"></div><div style="height:3px;background:#ddd;border-radius:1px;"></div></div>',
+        '<div style="background:#fff;border:1px solid #e0e0e0;border-radius:4px;height:100%;padding:4px;box-shadow:0 1px 4px rgba(0,0,0,.06);"><div style="height:3px;background:#ddd;border-radius:1px;width:50%;margin-bottom:3px;"></div><div style="height:3px;background:'+c+';border-radius:1px;width:25%;margin-left:auto;opacity:.5;"></div></div>',
+        '<div style="display:flex;flex-direction:column;gap:5px;padding-top:3px;"><div style="border-bottom:1px dashed #bbb;"></div><div style="border-bottom:1px dashed #bbb;"></div></div>',
+        '<div style="display:flex;justify-content:space-between;align-items:center;height:100%;"><div style="height:3px;background:#ddd;width:45%;border-radius:1px;"></div><div style="height:4px;background:'+c+';width:20%;border-radius:1px;opacity:.5;"></div></div>',
+        '<div style="display:flex;flex-direction:column;gap:2px;"><div style="height:5px;background:'+c+';border-radius:1px;opacity:.3;"></div><div style="height:5px;background:#f0f0f0;border-radius:1px;"></div><div style="height:5px;background:'+c+';border-radius:1px;opacity:.3;"></div></div>',
+        '<div style="display:flex;gap:3px;height:100%;"><div style="flex:1;border:1px solid #ddd;border-radius:3px;padding:3px;"><div style="height:2px;background:#ddd;border-radius:1px;"></div></div><div style="flex:1;border:2px solid '+c+';border-radius:3px;padding:3px;display:flex;align-items:flex-end;justify-content:flex-end;"><div style="height:3px;background:'+c+';width:50%;border-radius:1px;opacity:.4;"></div></div></div>',
+        '<div style="display:flex;flex-direction:column;gap:1px;"><div style="height:5px;background:#eee;border-bottom:2px solid #ddd;"></div><div style="height:5px;background:#eee;border-bottom:2px solid #ddd;"></div></div>',
+        '<div style="display:flex;flex-direction:column;gap:5px;padding-top:2px;"><div style="display:flex;align-items:center;gap:3px;"><div style="width:4px;height:4px;border-radius:50%;background:'+c+';opacity:.5;flex-shrink:0;"></div><div style="height:3px;background:#ddd;flex:1;border-radius:1px;"></div></div><div style="display:flex;align-items:center;gap:3px;"><div style="width:4px;height:4px;border-radius:50%;background:'+c+';opacity:.5;flex-shrink:0;"></div><div style="height:3px;background:#ddd;flex:1;border-radius:1px;"></div></div></div>',
+        '<div style="display:flex;align-items:center;gap:5px;height:100%;"><div style="height:3px;background:#ddd;width:38%;border-radius:1px;"></div><div style="height:4px;background:'+c+';width:18%;border-radius:1px;opacity:.5;"></div></div>'
+    ];
+    const tt=[
+        '<div style="position:absolute;bottom:0;left:0;right:0;height:6px;background:'+c+';opacity:.7;"></div>',
+        '<div style="position:absolute;bottom:4px;right:4px;width:20px;height:10px;border-left:3px solid '+c+';background:#f5f5f5;border-radius:2px;"></div>',
+        '<div style="position:absolute;bottom:6px;right:6px;width:16px;height:2px;background:'+c+';border-radius:1px;"></div>',
+        '<div style="position:absolute;bottom:2px;right:6px;width:10px;height:10px;border-radius:50%;background:'+c+';opacity:.5;"></div>',
+        '<div style="position:absolute;bottom:2px;right:4px;width:18px;height:10px;background:#fff;border:1px solid #ddd;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.06);"></div>',
+        '<div style="position:absolute;bottom:2px;right:4px;width:18px;height:9px;background:linear-gradient(135deg,'+c+',hsl('+t.hu+','+t.sa+'%,65%));border-radius:3px;"></div>',
+        '<div style="position:absolute;bottom:4px;right:6px;"><div style="width:14px;height:2px;background:'+c+';border-radius:1px;margin-bottom:2px;"></div><div style="width:14px;height:2px;background:'+c+';border-radius:1px;"></div></div>',
+        '<div style="position:absolute;bottom:2px;right:6px;width:3px;height:11px;background:'+c+';border-radius:1px;"></div>',
+        '<div style="position:absolute;bottom:3px;right:4px;width:20px;height:8px;background:'+c+';border-radius:4px;opacity:.5;"></div>',
+        ''
+    ];
+    return bb[t.b]+(tt[t.t]||'');
+}
+
+function openM(){document.getElementById('mO').classList.add('on');document.getElementById('tS').value='';flt('');document.getElementById('tS').focus();}
+function closeM(){document.getElementById('mO').classList.remove('on');}
+function flt(q){q=q.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>{c.style.display=c.dataset.nm.includes(q)?'':'none';});}
+function pick(id){sel=id;document.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));document.querySelectorAll('.card')[id].classList.add('sel');document.getElementById('tB').textContent='\u2713 '+T[id].nm;closeM();go();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+
+function go(){
+    const nm=document.getElementById('pN').value.trim();
+    if(!nm)return alert('Please enter Your Name/Company.');
+    let tid=sel;
+    if(tid===null){tid=db[nm];if(tid===undefined){const u=Object.values(db);do{tid=Math.floor(Math.random()*100);}while(u.includes(tid));db[nm]=tid;localStorage.setItem(DK,JSON.stringify(db));upH();}sel=tid;document.getElementById('tB').textContent='\u2713 '+T[tid].nm;}
+    else{db[nm]=tid;localStorage.setItem(DK,JSON.stringify(db));upH();}
+    ren(tid);
+}
+
+function fINR(a){return'\u20B9 '+a.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function nTW(n){
+    const o=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const t=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    if(n===0)return'Zero';
+    function c1(x){if(x<20)return o[x];return t[Math.floor(x/10)]+(x%10?' '+o[x%10]:'');}
+    function c2(x){
+        let r='';
+        if(x>=10000000){r+=c1(Math.floor(x/10000000))+' Crore ';x%=10000000;}
+        if(x>=100000){r+=c1(Math.floor(x/100000))+' Lakh ';x%=100000;}
+        if(x>=1000){r+=c1(Math.floor(x/1000))+' Thousand ';x%=1000;}
+        if(x>=100){r+=o[Math.floor(x/100)]+' Hundred ';x%=100;}
+        if(x>0)r+=c1(x);
+        return r.trim();
     }
+    const ni=Math.floor(n),nd=Math.round((n-ni)*100);
+    let w=c2(ni)+' Rupees';if(nd>0)w+=' and '+c2(nd)+' Paise';return w+' Only';
+}
+function fD(d){if(!d)return'-';return new Date(d).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'});}
 
-    function formatINR(amount) {
-        return '₹ ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function ren(id){
+    const cv=document.getElementById('cv'),t=T[id];
+    const d={nm:document.getElementById('pN').value,ad:document.getElementById('pA').value,cn:document.getElementById('cN').value,ca:document.getElementById('cA').value,iv:document.getElementById('iN').value||'001',dt:fD(document.getElementById('iD').value),ds:document.getElementById('dS').value,am:parseFloat(document.getElementById('aM').value)||0};
+    document.title='Invoice_'+d.iv;
+    const c='hsl('+t.hu+','+t.sa+'%,45%)',cL='hsl('+t.hu+','+t.sa+'%,92%)',cM='hsl('+t.hu+','+t.sa+'%,65%)',fn=FN[t.fn];
+    cv.style.fontFamily="'"+fn+"',sans-serif";
+    const as=fINR(d.am),aw=nTW(d.am);
+    const brk=(t.h===3||t.h===6);
+    let html=gH(t.h,d,c,cL,fn)+gM(d,c,brk)+gB(t.b,d,c,cL,as)+gT(t.t,d,c,cL,cM,as,aw)+gS(d.nm);
+    cv.innerHTML=html;
+}
+
+function gH(s,d,c,cL,fn){
+    const h1s='margin:0;font-family:\''+fn+'\',sans-serif;';
+    switch(s){
+    case 0:return'<div style="text-align:center;padding-bottom:18px;border-bottom:2px solid '+c+';"><div style="width:40px;height:2px;background:'+c+';margin:0 auto 8px;"></div><h1 style="'+h1s+'font-size:30px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:4px;">'+d.ad+'</div><div style="width:40px;height:2px;background:'+c+';margin:8px auto 0;"></div></div>';
+    case 1:return'<div style="padding-bottom:18px;border-bottom:1px solid #eee;"><h1 style="'+h1s+'font-size:32px;color:'+c+';">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:5px;">'+d.ad+'</div></div>';
+    case 2:return'<div style="text-align:center;padding:20px 0 18px;border-bottom:3px solid '+c+';background:'+cL+';margin:-50px -50px 0;padding:20px 50px 18px;"><h1 style="'+h1s+'font-size:28px;color:'+c+';text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1><div style="font-size:12px;color:#666;margin-top:4px;">'+d.ad+'</div></div>';
+    case 3:return'<div style="background:'+c+';color:#fff;margin:-50px -50px 0;padding:28px 50px;"><h1 style="'+h1s+'font-size:28px;text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1><div style="font-size:12px;opacity:.8;margin-top:4px;">'+d.ad+'</div></div>';
+    case 4:return'<div style="display:flex;align-items:center;gap:16px;padding-bottom:18px;border-bottom:1px solid #eee;"><div style="width:50px;height:50px;background:'+c+';border-radius:10px;flex-shrink:0;"></div><div><h1 style="'+h1s+'font-size:24px;color:'+c+';">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:3px;">'+d.ad+'</div></div></div>';
+    case 5:return'<div style="text-align:center;padding-bottom:18px;"><h1 style="'+h1s+'font-size:34px;color:'+c+';text-transform:uppercase;letter-spacing:3px;">'+d.nm+'</h1><div style="font-size:12px;color:#999;margin-top:4px;letter-spacing:1px;">'+d.ad+'</div><div style="margin:14px auto 0;width:80px;height:3px;background:'+c+';border-radius:2px;"></div></div>';
+    case 6:return'<div style="background:'+c+';color:#fff;margin:-50px -50px 0;padding:22px 50px;text-align:center;"><h1 style="'+h1s+'font-size:26px;text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1><div style="font-size:12px;opacity:.8;margin-top:3px;">'+d.ad+'</div></div>';
+    case 7:return'<div style="padding-bottom:18px;border-bottom:2px double '+c+';"><h1 style="'+h1s+'font-size:30px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:5px;">'+d.ad+'</div></div>';
+    case 8:return'<div style="text-align:center;padding-bottom:18px;border-bottom:1px solid #eee;"><div style="display:inline-block;padding:8px 20px;border:2px solid '+c+';border-radius:4px;"><h1 style="'+h1s+'font-size:24px;color:'+c+';text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1></div><div style="font-size:12px;color:#777;margin-top:8px;">'+d.ad+'</div></div>';
+    case 9:return'<div style="padding-bottom:18px;border-bottom:1px solid #eee;position:relative;"><h1 style="'+h1s+'font-size:30px;color:#333;">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:4px;">'+d.ad+'</div><div style="position:absolute;bottom:-1px;left:0;width:70px;height:3px;background:'+c+';border-radius:2px;"></div></div>';
     }
+}
 
-    function numberToWords(num) {
-        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-        if (num === 0) return 'Zero';
-        function convertLessThanOneThousand(n) {
-            if (n === 0) return '';
-            if (n < 20) return ones[n];
-            const t = Math.floor(n / 10), rem = n % 10;
-            return tens[t] + (rem !== 0 ? ' ' + ones[rem] : '');
-        }
-        function convert(n) {
-            if (n === 0) return '';
-            let result = '';
-            if (n >= 10000000) { result += convertLessThanOneThousand(Math.floor(n / 10000000)) + ' Crore '; n %= 10000000; }
-            if (n >= 100000) { result += convertLessThanOneThousand(Math.floor(n / 100000)) + ' Lakh '; n %= 100000; }
-            if (n >= 1000) { result += convertLessThanOneThousand(Math.floor(n / 1000)) + ' Thousand '; n %= 1000; }
-            if (n >= 100) { result += ones[Math.floor(n / 100)] + ' Hundred '; n %= 100; }
-            if (n > 0) result += convertLessThanOneThousand(n);
-            return result.trim();
-        }
-        const numInt = Math.floor(num), numDec = Math.round((num - numInt) * 100);
-        let words = convert(numInt) + ' Rupees';
-        if (numDec > 0) words += ' and ' + convert(numDec) + ' Paise';
-        return words + ' Only';
+function gM(d,c,brk){
+    const pt=brk?'margin-top:30px;':'';
+    return'<div style="display:flex;justify-content:space-between;'+pt+'margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid #eee;"><div><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Billed To</div><div style="font-size:15px;font-weight:700;">'+d.cn+'</div><div style="font-size:12px;color:#666;margin-top:3px;white-space:pre-wrap;">'+d.ca+'</div></div><div style="text-align:right;"><table style="font-size:13px;border-collapse:collapse;"><tr><td style="padding:2px 10px;color:#999;">Invoice #:</td><td style="font-weight:700;">'+d.iv+'</td></tr><tr><td style="padding:2px 10px;color:#999;">Date:</td><td style="font-weight:700;">'+d.dt+'</td></tr></table></div></div>';
+}
+
+function gB(s,d,c,cL,as){
+    const ds=d.ds,am=as;
+    switch(s){
+    case 0:return'<div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:25px;"><div style="background:#f9f9f9;padding:18px;border-radius:8px;border-left:4px solid '+c+';"><div style="font-size:11px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:8px;">Description</div><div style="font-size:14px;">'+ds+'</div></div><div style="background:#f9f9f9;padding:18px;border-radius:8px;border-right:4px solid '+c+';text-align:right;"><div style="font-size:11px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:8px;">Amount</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
+    case 1:return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Description</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:center;font-size:12px;">Qty</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:right;font-size:12px;">Rate</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:right;font-size:12px;">Amount</th></tr></thead><tbody><tr><td style="padding:12px 14px;border-bottom:1px solid #eee;">'+ds+'</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:center;">1</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:right;">'+am+'</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:right;font-weight:700;">'+am+'</td></tr></tbody></table></div>';
+    case 2:return'<div style="margin-top:25px;border:1px solid #eee;border-radius:12px;padding:22px;box-shadow:0 4px 14px rgba(0,0,0,.04);"><div style="display:flex;justify-content:space-between;margin-bottom:16px;"><div style="font-size:11px;color:#999;text-transform:uppercase;">Description</div><div style="font-size:11px;color:#999;text-transform:uppercase;">Amount</div></div><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:15px;font-weight:600;">'+ds+'</div><div style="font-size:16px;color:'+c+';font-weight:700;">'+am+'</div></div></div>';
+    case 3:return'<div style="margin-top:25px;"><div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px dashed #ccc;"><span style="color:#666;">Description</span><span>'+ds+'</span></div><div style="display:flex;justify-content:space-between;padding:14px 0;"><span style="color:#666;">Amount</span><span style="font-weight:700;">'+am+'</span></div></div>';
+    case 4:return'<div style="margin-top:25px;background:'+cL+';border-radius:10px;padding:20px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:10px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:4px;">Description</div><div style="font-size:14px;">'+ds+'</div></div><div style="text-align:right;"><div style="font-size:10px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:4px;">Amount</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div></div></div>';
+    case 5:return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><tr style="background:#f5f5f5;"><td style="padding:12px 14px;font-size:12px;color:#999;text-transform:uppercase;width:30%;">Description</td><td style="padding:12px 14px;font-size:14px;">'+ds+'</td></tr><tr><td style="padding:12px 14px;font-size:12px;color:#999;text-transform:uppercase;">Amount</td><td style="padding:12px 14px;font-size:16px;font-weight:700;color:'+c+';">'+am+'</td></tr></table></div>';
+    case 6:return'<div style="margin-top:25px;display:flex;gap:20px;"><div style="flex:1;border:1px solid #eee;border-radius:8px;padding:16px;"><div style="font-size:10px;color:#999;text-transform:uppercase;margin-bottom:6px;">Description</div><div style="font-size:14px;">'+ds+'</div></div><div style="flex:1;border:2px solid '+c+';border-radius:8px;padding:16px;text-align:right;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;margin-bottom:6px;">Amount</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
+    case 7:return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="padding:10px 14px;text-align:left;font-size:12px;color:'+c+';border-bottom:2px solid '+c+';text-transform:uppercase;">Description</th><th style="padding:10px 14px;text-align:right;font-size:12px;color:'+c+';border-bottom:2px solid '+c+';text-transform:uppercase;">Amount</th></tr></thead><tbody><tr><td style="padding:12px 14px;border-bottom:1px solid #eee;">'+ds+'</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:right;font-weight:700;">'+am+'</td></tr></tbody></table></div>';
+    case 8:return'<div style="margin-top:25px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:'+c+';flex-shrink:0;"></div><div style="font-size:10px;color:#999;text-transform:uppercase;">Description</div></div><div style="padding-left:18px;font-size:14px;margin-bottom:16px;">'+ds+'</div><div style="display:flex;align-items:center;gap:10px;"><div style="width:8px;height:8px;border-radius:50%;background:'+c+';flex-shrink:0;"></div><div style="font-size:10px;color:#999;text-transform:uppercase;">Amount</div></div><div style="padding-left:18px;font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div>';
+    case 9:return'<div style="margin-top:25px;display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:#fafafa;border-radius:8px;border:1px solid #eee;"><div style="font-size:14px;font-weight:600;">'+ds+'</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div>';
     }
+}
 
-    function renderInvoice(id) {
-        const container = document.getElementById('invoice-canvas');
-        const data = {
-            name: document.getElementById('pName').value,
-            address: document.getElementById('pAddress').value,
-            client: document.getElementById('cName').value,
-            clientAddress: document.getElementById('cAddress').value,
-            inv: document.getElementById('invNo').value || '001',
-            date: formatDate(document.getElementById('invDate').value),
-            desc: document.getElementById('desc').value,
-            amt: parseFloat(document.getElementById('amt').value) || 0
-        };
-        
-        document.title = "Invoice_" + data.inv;
-
-        const structureIndex = id % 100;
-        const hue = (id * 137.508) % 360;
-        const styleType = id % 3;
-        let primaryColor;
-        if (styleType === 0) primaryColor = `hsl(${hue}, 70%, 45%)`;
-        else if (styleType === 1) primaryColor = `hsl(${hue}, 50%, 35%)`;
-        else primaryColor = `hsl(${hue}, 15%, 25%)`;
-
-        const fontId = Math.floor(id / 10) % FONTS.length;
-        const selectedFont = FONTS[fontId];
-
-        container.style.setProperty('--primary-color', primaryColor);
-        container.style.setProperty('--font-heading', `'${selectedFont}', sans-serif`);
-        container.style.setProperty('--font-body', `'${selectedFont}', sans-serif`);
-        
-        const layoutIdx = Math.floor(structureIndex / 20) % 4;
-
-        const signatureBlock = `
-            <div class="signature-area">
-                <div class="signature-line"></div>
-                <div class="signature-text">Authorized Signatory</div>
-                <div style="font-size: 10px; color: #888; margin-top: 2px;">For ${data.name}</div>
-            </div>
-        `;
-
-        let html = `
-            <div class="letterhead-center">
-                <div class="style-ornament"></div>
-                <h1>${data.name}</h1>
-                <div class="address">${data.address}</div>
-            </div>
-        `;
-
-        html += `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
-                <div>
-                    <strong style="color:#888; font-size:11px; text-transform:uppercase;">Billed To</strong><br>
-                    <span style="font-size:15px; font-weight:600;">${data.client}</span>
-                    <div style="font-size:12px; color:#555; margin-top:4px; white-space: pre-wrap;">${data.clientAddress}</div>
-                </div>
-                <div style="text-align:right;">
-                    <table style="font-size:13px;">
-                        <tr><td style="padding:3px 10px; color:#888;">Invoice #:</td><td style="font-weight:600;">${data.inv}</td></tr>
-                        <tr><td style="padding:3px 10px; color:#888;">Date:</td><td style="font-weight:600;">${data.date}</td></tr>
-                    </table>
-                </div>
-            </div>
-        `;
-
-        const displayAmt = formatINR(data.amt);
-        const amtWords = numberToWords(data.amt);
-        const wordsHtml = `<div class="amount-words-box">Rupees in words: <strong>${amtWords}</strong></div>`;
-
-        if (layoutIdx === 0) {
-            html += `
-                <div class="layout-grid">
-                    <div class="box">
-                        <strong style="color:var(--primary-color); font-size:12px;">DESCRIPTION</strong>
-                        <p style="margin:10px 0 0 0; font-size:14px;">${data.desc}</p>
-                    </div>
-                    <div class="box" style="text-align:right;">
-                        <strong style="color:var(--primary-color); font-size:12px;">AMOUNT</strong>
-                        <p style="margin:10px 0 0 0; font-size:18px; font-weight:600;">${displayAmt}</p>
-                    </div>
-                </div>
-            `;
-        } else if (layoutIdx === 1) {
-            html += `
-                <table class="layout-table">
-                    <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>
-                    <tbody>
-                        <tr><td>${data.desc}</td><td>1</td><td>${displayAmt}</td><td style="font-weight:700;">${displayAmt}</td></tr>
-                    </tbody>
-                </table>
-            `;
-        } else if (layoutIdx === 2) {
-            html += `
-                <div class="layout-card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                        <div style="font-size:12px; color:#888;">Description</div>
-                        <div style="font-size:12px; color:#888;">Amount</div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size:16px; font-weight:600;">${data.desc}</div>
-                        <div style="font-size:16px; color:var(--primary-color); font-weight:700;">${displayAmt}</div>
-                    </div>
-                </div>
-            `;
-        } else {
-            html += `
-                <div class="layout-list">
-                    <div class="row"><span style="color:#666;">Description</span><span>${data.desc}</span></div>
-                    <div class="row" style="border:none;"><span style="color:#666;">Amount</span><span style="font-weight:700;">${displayAmt}</span></div>
-                </div>
-            `;
-        }
-
-        const totalStyle = id % 3;
-
-        if (totalStyle === 0) {
-            html += `
-                <div class="total-section-right">
-                    <div style="background:#f5f5f5; display:inline-block; padding:10px 20px; border-radius:4px; border-left:4px solid var(--primary-color);">
-                        <div class="total-label">Grand Total</div>
-                        <div class="total-amount">${displayAmt}</div>
-                    </div>
-                </div>
-                ${wordsHtml}
-                ${signatureBlock}
-            `;
-        } else if (totalStyle === 1) {
-            html += `
-                <div style="text-align:right; margin-top:40px;">
-                    <div style="border-top:2px solid var(--primary-color); display:inline-block; padding-top:10px;">
-                        <span style="font-size:12px; color:#888;">Total Due: </span>
-                        <span style="font-size:24px; font-weight:bold; color:var(--primary-color);">${displayAmt}</span>
-                    </div>
-                </div>
-                ${wordsHtml}
-                ${signatureBlock}
-            `;
-        } else {
-            html += `
-                <div class="total-banner">
-                    <span class="total-label" style="color:rgba(255,255,255,0.8);">Grand Total</span><br>
-                    <span class="total-amount">${displayAmt}</span>
-                </div>
-                <div style="margin-top: 20px;">${wordsHtml}</div>
-                ${signatureBlock}
-            `;
-        }
-
-        container.innerHTML = html;
+function gT(s,d,c,cL,cM,as,aw){
+    const am=as,wd=aw;
+    switch(s){
+    case 0:return'<div style="background:'+c+';color:#fff;margin:35px -50px 0;padding:28px 50px;text-align:right;"><div style="font-size:11px;text-transform:uppercase;opacity:.7;letter-spacing:.5px;">Grand Total</div><div style="font-size:30px;font-weight:700;margin-top:2px;">'+am+'</div></div><div style="margin:18px -50px 0;padding:10px 50px;background:rgba(0,0,0,.03);font-size:12px;color:#666;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 1:return'<div style="text-align:right;margin-top:35px;"><div style="display:inline-block;background:#f5f5f5;padding:12px 22px;border-radius:6px;border-left:4px solid '+c+';"><div style="font-size:10px;color:#999;text-transform:uppercase;">Grand Total</div><div style="font-size:26px;font-weight:700;color:'+c+';margin-top:2px;">'+am+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 2:return'<div style="text-align:right;margin-top:35px;"><div style="border-top:2px solid '+c+';display:inline-block;padding-top:10px;"><span style="font-size:11px;color:#999;text-transform:uppercase;">Total Due: </span><span style="font-size:24px;font-weight:700;color:'+c+';">'+am+'</span></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 3:return'<div style="margin-top:35px;text-align:center;padding:20px;border:2px solid '+c+';border-radius:10px;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">Grand Total</div><div style="font-size:32px;font-weight:700;color:'+c+';margin-top:4px;">'+am+'</div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 4:return'<div style="display:flex;justify-content:flex-end;margin-top:35px;"><div style="width:220px;background:'+cL+';border-radius:10px;padding:18px;text-align:center;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:.5px;">Amount Payable</div><div style="font-size:24px;font-weight:700;color:'+c+';margin-top:4px;">'+am+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 5:return'<div style="background:linear-gradient(135deg,'+c+','+cM+');color:#fff;margin:35px -50px 0;padding:28px 50px;text-align:right;"><div style="font-size:11px;text-transform:uppercase;opacity:.75;letter-spacing:.5px;">Grand Total</div><div style="font-size:30px;font-weight:700;margin-top:2px;">'+am+'</div></div><div style="margin:18px -50px 0;padding:10px 50px;background:rgba(0,0,0,.02);font-size:12px;color:#666;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 6:return'<div style="margin-top:35px;display:flex;gap:20px;"><div style="flex:1;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div><div style="text-align:right;"><div style="font-size:10px;color:#999;text-transform:uppercase;">Total</div><div style="font-size:26px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
+    case 7:return'<div style="margin-top:35px;text-align:right;"><div style="font-size:10px;color:#999;text-transform:uppercase;">Grand Total</div><div style="font-size:36px;font-weight:700;color:'+c+';margin-top:2px;line-height:1.1;">'+am+'</div></div><div style="margin-top:14px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 8:return'<div style="margin-top:35px;padding:18px;background:'+cL+';border-radius:8px;border-left:5px solid '+c+';display:flex;justify-content:space-between;align-items:center;"><div style="font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div><div style="text-align:right;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;">Total</div><div style="font-size:24px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
+    case 9:return'<div style="margin-top:35px;text-align:right;"><div style="display:inline-block;border:2px solid '+c+';border-radius:10px;padding:16px 28px;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">Grand Total</div><div style="font-size:28px;font-weight:700;color:'+c+';margin-top:4px;">'+am+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
     }
+}
 
-    function updateHistory() {
-        const box = document.getElementById('historyBox');
-        const keys = Object.keys(db);
-        if (keys.length === 0) { box.innerHTML = "<div style='color:#aaa; font-size:11px;'>No history.</div>"; return; }
-        box.innerHTML = `<div style="font-size:11px; color:#666; margin-bottom:5px;">History:</div>`;
-        keys.forEach(k => {
-            let badge = document.createElement('span');
-            badge.className = 'client-badge';
-            badge.innerText = k;
-            badge.onclick = () => { document.getElementById('pName').value = k; processInvoice(); };
-            box.appendChild(badge);
-        });
-    }
+function gS(nm){
+    return'<div style="margin-top:50px;width:240px;margin-left:auto;text-align:center;"><div style="border-top:1px solid #333;padding-top:4px;"><div style="font-size:12px;color:#555;font-weight:700;">Authorized Signatory</div><div style="font-size:10px;color:#999;margin-top:2px;">For '+nm+'</div></div></div>';
+}
 
-    function resetAll() { if (confirm("Reset?")) { localStorage.removeItem(DB_KEY); db = {}; location.reload(); } }
-    
-    function formatDate(d) {
-        if (!d) return '-';
-        return new Date(d).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
-    }
+function upH(){
+    const b=document.getElementById('hB'),k=Object.keys(db);
+    if(!k.length){b.innerHTML='<div class="hist-t">No history</div>';return;}
+    b.innerHTML='<div class="hist-t">History</div>';
+    k.forEach(n=>{const s=document.createElement('span');s.className='badge';s.textContent=n;s.onclick=()=>{document.getElementById('pN').value=n;go();};b.appendChild(s);});
+}
+function rst(){if(confirm('Reset all data?')){localStorage.removeItem(DK);db={};sel=null;document.getElementById('tB').textContent='Choose Template';location.reload();}}
 </script>
 </body>
 </html>
