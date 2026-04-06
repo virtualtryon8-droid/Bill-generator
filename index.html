@@ -11,7 +11,7 @@
         *{box-sizing:border-box;margin:0;padding:0;}
         body{font-family:'Segoe UI',sans-serif;background:#eef1f5;padding:20px;color:#333;font-size:14px;}
         .wrap{display:flex;gap:20px;max-width:1200px;margin:0 auto;}
-        .side{flex:0 0 310px;background:#fff;padding:22px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.05);height:fit-content;position:sticky;top:20px;}
+        .side{flex:0 0 320px;background:#fff;padding:22px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.05);height:fit-content;position:sticky;top:20px;overflow-y:auto;max-height:calc(100vh - 40px);}
         .side h2{font-size:16px;color:#2c3e50;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
         .fg{margin-bottom:10px;}
         .fg label{display:block;font-weight:600;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
@@ -28,6 +28,24 @@
         .btn-s:hover{background:#e4e7eb;}
         .btn-d{background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;margin-top:7px;}
         .btn-d:hover{background:#fbd0d0;}
+        .btn-add{background:#f0f7ff;color:#667eea;border:1px dashed #a0b4f0;margin-top:8px;font-weight:600;}
+        .btn-add:hover{background:#e0ecff;border-color:#667eea;}
+        .ir{display:flex;gap:6px;align-items:center;margin-bottom:8px;animation:fadeIn .2s ease;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+        .ir .i-d{flex:1;padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;font-family:inherit;min-width:0;}
+        .ir .i-d:focus{border-color:#667eea;outline:none;}
+        .ir .i-a{width:88px;padding:7px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px;font-family:inherit;flex-shrink:0;}
+        .ir .i-a:focus{border-color:#667eea;outline:none;}
+        .rb{width:28px;height:28px;border:1px solid #f5c6c6;background:#fde8e8;color:#c0392b;border-radius:6px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;line-height:1;}
+        .rb:hover{background:#fbd0d0;}
+        .rb:disabled{opacity:.3;cursor:not-allowed;}
+        .st{margin-top:6px;text-align:right;font-size:13px;font-weight:700;color:#667eea;padding:8px 12px;background:#f8f9ff;border-radius:6px;border:1px solid #e8ecff;}
+        .ic-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600;}
+        .ir-hdr{display:flex;gap:6px;margin-bottom:4px;padding:0 0 2px;}
+        .ir-hdr span{font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.3px;}
+        .ir-hdr .h-d{flex:1;}
+        .ir-hdr .h-a{width:88px;}
+        .ir-hdr .h-x{width:28px;}
         .hist{margin-top:12px;max-height:160px;overflow-y:auto;border-top:1px solid #eee;padding-top:8px;}
         .hist-t{font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
         .badge{display:inline-block;background:#f0f2f5;padding:3px 8px;border-radius:20px;font-size:10px;margin:2px;cursor:pointer;color:#666;transition:all .2s;}
@@ -56,7 +74,7 @@
         .card .chk{position:absolute;top:4px;right:4px;width:17px;height:17px;background:#667eea;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;z-index:1;}
         .card.sel .chk{display:flex;}
         @media print{body{background:#fff;padding:0;}.wrap{display:block;}.side{display:none!important;}.prev{padding:0;background:#fff;}#cv{box-shadow:none;width:100%;min-height:auto;}.ov{display:none!important;}}
-        @media(max-width:900px){.wrap{flex-direction:column;}.side{flex:none;position:static;width:100%;}#cv{width:100%;min-height:auto;padding:30px;}.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}.mdl{width:97%;max-height:90vh;}}
+        @media(max-width:900px){.wrap{flex-direction:column;}.side{flex:none;position:static;width:100%;max-height:none;}#cv{width:100%;min-height:auto;padding:30px;}.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}.mdl{width:97%;max-height:90vh;}}
     </style>
 </head>
 <body>
@@ -71,8 +89,15 @@
         <hr class="sep">
         <div class="fg"><label>Invoice #</label><input type="text" id="iN" placeholder="INV-001"></div>
         <div class="fg"><label>Date</label><input type="date" id="iD"></div>
-        <div class="fg"><label>Description</label><textarea id="dS" rows="2">Professional Services Rendered</textarea></div>
-        <div class="fg"><label>Amount (INR)</label><input type="number" id="aM" value="15000"></div>
+        <hr class="sep">
+        <div class="fg">
+            <label>Invoice Items</label>
+            <div class="ir-hdr"><span class="h-d">Description</span><span class="h-a">Amount</span><span class="h-x"></span></div>
+            <div id="iC"></div>
+            <button class="btn btn-add" onclick="aI()">+ Add Item</button>
+            <div class="st" id="sT">Subtotal: ₹ 0.00</div>
+        </div>
+        <hr class="sep">
         <button class="btn btn-g" onclick="go()">Generate Bill</button>
         <button class="btn btn-t" id="tB" onclick="openM()">Choose Template</button>
         <button class="btn btn-s" onclick="window.print()">Print / Save PDF</button>
@@ -93,7 +118,7 @@
 const FN=['Poppins','Montserrat','Raleway','Rubik','Lato','Open Sans','Playfair Display','Merriweather','Oswald','Cinzel'];
 const AJ=['Royal','Pure','Deep','Soft','Bright','Dark','Rich','Light','Warm','Cool','Bold','Subtle','Fresh','Crisp','Smooth','Sharp','Clean','Grand','Noble','Calm'];
 const NN=['Indigo','Emerald','Coral','Slate','Teal','Violet','Crimson','Olive','Navy','Jade','Onyx','Rose','Copper','Moss','Azure','Plum','Gold','Bronze','Ivory','Amber'];
-const DK='inv_gen_v5';
+const DK='inv_gen_v6';
 let db=JSON.parse(localStorage.getItem(DK))||{};
 let sel=null;
 
@@ -103,10 +128,50 @@ localStorage.setItem(DK,JSON.stringify(db));
 const T=[];
 for(let i=0;i<100;i++)T.push({id:i,nm:AJ[i%20]+' '+NN[(i*7)%20],h:i%10,b:(i*3)%10,t:(i*7)%10,hu:Math.round((i*137.508)%360),sa:[70,50,15,80,30][i%5],fn:i%10});
 
-window.onload=function(){document.getElementById('iD').valueAsDate=new Date();buildG();upH();ph();};
+window.onload=function(){
+    document.getElementById('iD').valueAsDate=new Date();
+    aI('Professional Services Rendered',15000);
+    upST();
+    buildG();upH();ph();
+};
 
 function ph(){document.getElementById('cv').innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#ccc;"><div style="font-size:48px;margin-bottom:14px;">&#128196;</div><div style="font-size:15px;font-weight:600;color:#bbb;">No Invoice Generated</div><div style="font-size:12px;margin-top:5px;color:#ccc;">Enter details and click Generate Bill</div></div>';}
 
+/* ---- Item Management ---- */
+function aI(desc,val){
+    const c=document.getElementById('iC');
+    const d=document.createElement('div');
+    d.className='ir';
+    d.innerHTML='<input class="i-d" placeholder="Description" value="'+(desc||'')+'">' +
+        '<input class="i-a" type="number" placeholder="₹" value="'+(val||'')+'" oninput="upST()">' +
+        '<button class="rb" onclick="rI(this)" title="Remove item">&times;</button>';
+    c.appendChild(d);
+    upRB();
+    upST();
+}
+function rI(btn){
+    const c=document.getElementById('iC');
+    if(c.children.length<=1)return;
+    btn.parentElement.remove();
+    upRB();upST();
+}
+function upRB(){
+    const rows=document.querySelectorAll('.ir');
+    rows.forEach(r=>{r.querySelector('.rb').disabled=rows.length<=1;});
+}
+function upST(){
+    const items=gI();
+    const total=items.reduce((s,i)=>s+i.amount,0);
+    document.getElementById('sT').textContent='Subtotal: '+fINR(total);
+}
+function gI(){
+    return Array.from(document.querySelectorAll('.ir')).map(r=>({
+        desc:r.querySelector('.i-d').value.trim()||'Item',
+        amount:parseFloat(r.querySelector('.i-a').value)||0
+    }));
+}
+
+/* ---- Template Grid ---- */
 function buildG(){
     const g=document.getElementById('tG');g.innerHTML='';
     T.forEach(t=>{
@@ -119,7 +184,6 @@ function buildG(){
         g.appendChild(d);
     });
 }
-
 function mP(t,c){
     const bb=[
         '<div style="display:flex;gap:3px;height:100%;"><div style="flex:1;background:#e8e8e8;border-radius:2px;border-left:3px solid '+c+';"></div><div style="flex:1;background:#e8e8e8;border-radius:2px;border-right:3px solid '+c+';"></div></div>',
@@ -154,6 +218,7 @@ function flt(q){q=q.toLowerCase().trim();document.querySelectorAll('.card').forE
 function pick(id){sel=id;document.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));document.querySelectorAll('.card')[id].classList.add('sel');document.getElementById('tB').textContent='\u2713 '+T[id].nm;closeM();go();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 
+/* ---- Generate ---- */
 function go(){
     const nm=document.getElementById('pN').value.trim();
     if(!nm)return alert('Please enter Your Name/Company.');
@@ -163,6 +228,7 @@ function go(){
     ren(tid);
 }
 
+/* ---- Formatters ---- */
 function fINR(a){return'\u20B9 '+a.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function nTW(n){
     const o=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
@@ -183,24 +249,28 @@ function nTW(n){
 }
 function fD(d){if(!d)return'-';return new Date(d).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'});}
 
+/* ---- Render Invoice ---- */
 function ren(id){
     const cv=document.getElementById('cv'),t=T[id];
-    const d={nm:document.getElementById('pN').value,ad:document.getElementById('pA').value,cn:document.getElementById('cN').value,ca:document.getElementById('cA').value,iv:document.getElementById('iN').value||'001',dt:fD(document.getElementById('iD').value),ds:document.getElementById('dS').value,am:parseFloat(document.getElementById('aM').value)||0};
+    const items=gI();
+    const sub=items.reduce((s,i)=>s+i.amount,0);
+    const d={nm:document.getElementById('pN').value,ad:document.getElementById('pA').value,cn:document.getElementById('cN').value,ca:document.getElementById('cA').value,iv:document.getElementById('iN').value||'001',dt:fD(document.getElementById('iD').value),items:items,sub:sub};
     document.title='Invoice_'+d.iv;
     const c='hsl('+t.hu+','+t.sa+'%,45%)',cL='hsl('+t.hu+','+t.sa+'%,92%)',cM='hsl('+t.hu+','+t.sa+'%,65%)',fn=FN[t.fn];
     cv.style.fontFamily="'"+fn+"',sans-serif";
-    const as=fINR(d.am),aw=nTW(d.am);
+    const as=fINR(d.sub),aw=nTW(d.sub);
     const brk=(t.h===3||t.h===6);
-    let html=gH(t.h,d,c,cL,fn)+gM(d,c,brk)+gB(t.b,d,c,cL,as)+gT(t.t,d,c,cL,cM,as,aw)+gS(d.nm);
+    let html=gH(t.h,d,c,cL,fn)+gM(d,c,brk)+gB(t.b,d.items,c,cL)+gT(t.t,d,c,cL,cM,as,aw)+gS(d.nm);
     cv.innerHTML=html;
 }
 
+/* ---- Header ---- */
 function gH(s,d,c,cL,fn){
     const h1s='margin:0;font-family:\''+fn+'\',sans-serif;';
     switch(s){
     case 0:return'<div style="text-align:center;padding-bottom:18px;border-bottom:2px solid '+c+';"><div style="width:40px;height:2px;background:'+c+';margin:0 auto 8px;"></div><h1 style="'+h1s+'font-size:30px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:4px;">'+d.ad+'</div><div style="width:40px;height:2px;background:'+c+';margin:8px auto 0;"></div></div>';
     case 1:return'<div style="padding-bottom:18px;border-bottom:1px solid #eee;"><h1 style="'+h1s+'font-size:32px;color:'+c+';">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:5px;">'+d.ad+'</div></div>';
-    case 2:return'<div style="text-align:center;padding:20px 0 18px;border-bottom:3px solid '+c+';background:'+cL+';margin:-50px -50px 0;padding:20px 50px 18px;"><h1 style="'+h1s+'font-size:28px;color:'+c+';text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1><div style="font-size:12px;color:#666;margin-top:4px;">'+d.ad+'</div></div>';
+    case 2:return'<div style="text-align:center;background:'+cL+';margin:-50px -50px 0;padding:20px 50px 18px;border-bottom:3px solid '+c+';"><h1 style="'+h1s+'font-size:28px;color:'+c+';text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1><div style="font-size:12px;color:#666;margin-top:4px;">'+d.ad+'</div></div>';
     case 3:return'<div style="background:'+c+';color:#fff;margin:-50px -50px 0;padding:28px 50px;"><h1 style="'+h1s+'font-size:28px;text-transform:uppercase;letter-spacing:2px;">'+d.nm+'</h1><div style="font-size:12px;opacity:.8;margin-top:4px;">'+d.ad+'</div></div>';
     case 4:return'<div style="display:flex;align-items:center;gap:16px;padding-bottom:18px;border-bottom:1px solid #eee;"><div style="width:50px;height:50px;background:'+c+';border-radius:10px;flex-shrink:0;"></div><div><h1 style="'+h1s+'font-size:24px;color:'+c+';">'+d.nm+'</h1><div style="font-size:12px;color:#777;margin-top:3px;">'+d.ad+'</div></div></div>';
     case 5:return'<div style="text-align:center;padding-bottom:18px;"><h1 style="'+h1s+'font-size:34px;color:'+c+';text-transform:uppercase;letter-spacing:3px;">'+d.nm+'</h1><div style="font-size:12px;color:#999;margin-top:4px;letter-spacing:1px;">'+d.ad+'</div><div style="margin:14px auto 0;width:80px;height:3px;background:'+c+';border-radius:2px;"></div></div>';
@@ -211,47 +281,115 @@ function gH(s,d,c,cL,fn){
     }
 }
 
+/* ---- Middle (Billed To) ---- */
 function gM(d,c,brk){
     const pt=brk?'margin-top:30px;':'';
     return'<div style="display:flex;justify-content:space-between;'+pt+'margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid #eee;"><div><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Billed To</div><div style="font-size:15px;font-weight:700;">'+d.cn+'</div><div style="font-size:12px;color:#666;margin-top:3px;white-space:pre-wrap;">'+d.ca+'</div></div><div style="text-align:right;"><table style="font-size:13px;border-collapse:collapse;"><tr><td style="padding:2px 10px;color:#999;">Invoice #:</td><td style="font-weight:700;">'+d.iv+'</td></tr><tr><td style="padding:2px 10px;color:#999;">Date:</td><td style="font-weight:700;">'+d.dt+'</td></tr></table></div></div>';
 }
 
-function gB(s,d,c,cL,as){
-    const ds=d.ds,am=as;
+/* ---- Body (Items) ---- */
+function gB(s,items,c,cL){
     switch(s){
-    case 0:return'<div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:25px;"><div style="background:#f9f9f9;padding:18px;border-radius:8px;border-left:4px solid '+c+';"><div style="font-size:11px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:8px;">Description</div><div style="font-size:14px;">'+ds+'</div></div><div style="background:#f9f9f9;padding:18px;border-radius:8px;border-right:4px solid '+c+';text-align:right;"><div style="font-size:11px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:8px;">Amount</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
-    case 1:return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Description</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:center;font-size:12px;">Qty</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:right;font-size:12px;">Rate</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:right;font-size:12px;">Amount</th></tr></thead><tbody><tr><td style="padding:12px 14px;border-bottom:1px solid #eee;">'+ds+'</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:center;">1</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:right;">'+am+'</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:right;font-weight:700;">'+am+'</td></tr></tbody></table></div>';
-    case 2:return'<div style="margin-top:25px;border:1px solid #eee;border-radius:12px;padding:22px;box-shadow:0 4px 14px rgba(0,0,0,.04);"><div style="display:flex;justify-content:space-between;margin-bottom:16px;"><div style="font-size:11px;color:#999;text-transform:uppercase;">Description</div><div style="font-size:11px;color:#999;text-transform:uppercase;">Amount</div></div><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:15px;font-weight:600;">'+ds+'</div><div style="font-size:16px;color:'+c+';font-weight:700;">'+am+'</div></div></div>';
-    case 3:return'<div style="margin-top:25px;"><div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px dashed #ccc;"><span style="color:#666;">Description</span><span>'+ds+'</span></div><div style="display:flex;justify-content:space-between;padding:14px 0;"><span style="color:#666;">Amount</span><span style="font-weight:700;">'+am+'</span></div></div>';
-    case 4:return'<div style="margin-top:25px;background:'+cL+';border-radius:10px;padding:20px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:10px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:4px;">Description</div><div style="font-size:14px;">'+ds+'</div></div><div style="text-align:right;"><div style="font-size:10px;color:'+c+';font-weight:700;text-transform:uppercase;margin-bottom:4px;">Amount</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div></div></div>';
-    case 5:return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><tr style="background:#f5f5f5;"><td style="padding:12px 14px;font-size:12px;color:#999;text-transform:uppercase;width:30%;">Description</td><td style="padding:12px 14px;font-size:14px;">'+ds+'</td></tr><tr><td style="padding:12px 14px;font-size:12px;color:#999;text-transform:uppercase;">Amount</td><td style="padding:12px 14px;font-size:16px;font-weight:700;color:'+c+';">'+am+'</td></tr></table></div>';
-    case 6:return'<div style="margin-top:25px;display:flex;gap:20px;"><div style="flex:1;border:1px solid #eee;border-radius:8px;padding:16px;"><div style="font-size:10px;color:#999;text-transform:uppercase;margin-bottom:6px;">Description</div><div style="font-size:14px;">'+ds+'</div></div><div style="flex:1;border:2px solid '+c+';border-radius:8px;padding:16px;text-align:right;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;margin-bottom:6px;">Amount</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
-    case 7:return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="padding:10px 14px;text-align:left;font-size:12px;color:'+c+';border-bottom:2px solid '+c+';text-transform:uppercase;">Description</th><th style="padding:10px 14px;text-align:right;font-size:12px;color:'+c+';border-bottom:2px solid '+c+';text-transform:uppercase;">Amount</th></tr></thead><tbody><tr><td style="padding:12px 14px;border-bottom:1px solid #eee;">'+ds+'</td><td style="padding:12px 14px;border-bottom:1px solid #eee;text-align:right;font-weight:700;">'+am+'</td></tr></tbody></table></div>';
-    case 8:return'<div style="margin-top:25px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:'+c+';flex-shrink:0;"></div><div style="font-size:10px;color:#999;text-transform:uppercase;">Description</div></div><div style="padding-left:18px;font-size:14px;margin-bottom:16px;">'+ds+'</div><div style="display:flex;align-items:center;gap:10px;"><div style="width:8px;height:8px;border-radius:50%;background:'+c+';flex-shrink:0;"></div><div style="font-size:10px;color:#999;text-transform:uppercase;">Amount</div></div><div style="padding-left:18px;font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div>';
-    case 9:return'<div style="margin-top:25px;display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:#fafafa;border-radius:8px;border:1px solid #eee;"><div style="font-size:14px;font-weight:600;">'+ds+'</div><div style="font-size:18px;font-weight:700;color:'+c+';">'+am+'</div></div>';
+    case 0:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            return'<div style="display:grid;grid-template-columns:1fr auto;gap:0;margin-bottom:'+(last?'0':'8px')+';"><div style="background:#f9f9f9;padding:13px 18px;border-radius:8px 0 0 8px;border-left:4px solid '+c+';font-size:13px;">'+it.desc+'</div><div style="background:#f9f9f9;padding:13px 18px;border-radius:0 8px 8px 0;text-align:right;font-weight:700;color:'+c+';font-size:14px;">'+fINR(it.amount)+'</div></div>';
+        }).join('');
+        return'<div style="margin-top:25px;">'+r+'</div>';
+    }
+    case 1:{
+        let rows=items.map((it,i)=>{
+            const last=i===items.length-1;
+            const bb=last?'none':'1px solid #eee';
+            return'<tr><td style="padding:11px 14px;border-bottom:'+bb+';">'+it.desc+'</td><td style="padding:11px 14px;border-bottom:'+bb+';text-align:right;font-weight:700;">'+fINR(it.amount)+'</td></tr>';
+        }).join('');
+        return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Description</th><th style="background:'+c+';color:#fff;padding:11px 14px;text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Amount</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    }
+    case 2:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            return'<div style="display:flex;justify-content:space-between;align-items:center;padding:'+(i>0?'12px':'0')+' 0;'+(last?'':'border-bottom:1px solid #eee;')+'"><div style="font-size:13px;">'+it.desc+'</div><div style="font-size:14px;font-weight:700;color:'+c+';">'+fINR(it.amount)+'</div></div>';
+        }).join('');
+        return'<div style="margin-top:25px;border:1px solid #eee;border-radius:12px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,.04);">'+r+'</div>';
+    }
+    case 3:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            let h='<div style="display:flex;justify-content:space-between;padding:12px 0;'+(last?'':'border-bottom:1px dashed #ccc;')+'"><span style="color:#666;font-size:13px;">'+it.desc+'</span><span style="font-weight:700;font-size:13px;">'+fINR(it.amount)+'</span></div>';
+            return h;
+        }).join('');
+        return'<div style="margin-top:25px;">'+r+'</div>';
+    }
+    case 4:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            return'<div style="display:flex;justify-content:space-between;align-items:center;padding:'+(i>0?'10px':'0')+' 0;'+(last?'':'border-bottom:1px solid rgba(0,0,0,.06);')+'"><div style="font-size:13px;">'+it.desc+'</div><div style="font-size:14px;font-weight:700;color:'+c+';">'+fINR(it.amount)+'</div></div>';
+        }).join('');
+        return'<div style="margin-top:25px;background:'+cL+';border-radius:10px;padding:18px;">'+r+'</div>';
+    }
+    case 5:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            const bg=i%2===0?'#f5f5f5':'#fff';
+            return'<tr style="background:'+bg+';"><td style="padding:11px 14px;font-size:12px;color:#999;text-transform:uppercase;width:30%;">'+it.desc+'</td><td style="padding:11px 14px;font-size:14px;font-weight:700;color:'+c+';">'+fINR(it.amount)+'</td></tr>';
+        }).join('');
+        return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;">'+r+'</table></div>';
+    }
+    case 6:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            const mb=last?'0':'12px';
+            return'<div style="display:flex;gap:14px;margin-bottom:'+mb+';"><div style="flex:1;border:1px solid #eee;border-radius:8px;padding:14px;font-size:13px;">'+it.desc+'</div><div style="flex:0 0 160px;border:2px solid '+c+';border-radius:8px;padding:14px;text-align:right;display:flex;align-items:center;justify-content:flex-end;font-weight:700;color:'+c+';font-size:14px;">'+fINR(it.amount)+'</div></div>';
+        }).join('');
+        return'<div style="margin-top:25px;">'+r+'</div>';
+    }
+    case 7:{
+        let rows=items.map((it,i)=>{
+            const last=i===items.length-1;
+            const bb=last?'none':'1px solid #eee';
+            return'<tr><td style="padding:11px 14px;border-bottom:'+bb+';font-size:13px;">'+it.desc+'</td><td style="padding:11px 14px;border-bottom:'+bb+';text-align:right;font-weight:700;font-size:13px;">'+fINR(it.amount)+'</td></tr>';
+        }).join('');
+        return'<div style="margin-top:25px;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="padding:10px 14px;text-align:left;font-size:11px;color:'+c+';border-bottom:2px solid '+c+';text-transform:uppercase;letter-spacing:.5px;">Description</th><th style="padding:10px 14px;text-align:right;font-size:11px;color:'+c+';border-bottom:2px solid '+c+';text-transform:uppercase;letter-spacing:.5px;">Amount</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    }
+    case 8:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            return'<div style="display:flex;align-items:center;gap:10px;margin-bottom:'+(last?'0':'12px')+';"><div style="width:8px;height:8px;border-radius:50%;background:'+c+';flex-shrink:0;"></div><div style="flex:1;font-size:13px;">'+it.desc+'</div><div style="font-weight:700;color:'+c+';font-size:13px;">'+fINR(it.amount)+'</div></div>';
+        }).join('');
+        return'<div style="margin-top:25px;">'+r+'</div>';
+    }
+    case 9:{
+        let r=items.map((it,i)=>{
+            const last=i===items.length-1;
+            return'<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:'+(i%2===0?'#fafafa':'#fff')+';border-radius:8px;border:1px solid #eee;margin-bottom:'+(last?'0':'6px')+';"><div style="font-size:13px;font-weight:500;">'+it.desc+'</div><div style="font-size:14px;font-weight:700;color:'+c+';">'+fINR(it.amount)+'</div></div>';
+        }).join('');
+        return'<div style="margin-top:25px;">'+r+'</div>';
+    }
     }
 }
 
+/* ---- Total ---- */
 function gT(s,d,c,cL,cM,as,aw){
-    const am=as,wd=aw;
     switch(s){
-    case 0:return'<div style="background:'+c+';color:#fff;margin:35px -50px 0;padding:28px 50px;text-align:right;"><div style="font-size:11px;text-transform:uppercase;opacity:.7;letter-spacing:.5px;">Grand Total</div><div style="font-size:30px;font-weight:700;margin-top:2px;">'+am+'</div></div><div style="margin:18px -50px 0;padding:10px 50px;background:rgba(0,0,0,.03);font-size:12px;color:#666;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 1:return'<div style="text-align:right;margin-top:35px;"><div style="display:inline-block;background:#f5f5f5;padding:12px 22px;border-radius:6px;border-left:4px solid '+c+';"><div style="font-size:10px;color:#999;text-transform:uppercase;">Grand Total</div><div style="font-size:26px;font-weight:700;color:'+c+';margin-top:2px;">'+am+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 2:return'<div style="text-align:right;margin-top:35px;"><div style="border-top:2px solid '+c+';display:inline-block;padding-top:10px;"><span style="font-size:11px;color:#999;text-transform:uppercase;">Total Due: </span><span style="font-size:24px;font-weight:700;color:'+c+';">'+am+'</span></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 3:return'<div style="margin-top:35px;text-align:center;padding:20px;border:2px solid '+c+';border-radius:10px;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">Grand Total</div><div style="font-size:32px;font-weight:700;color:'+c+';margin-top:4px;">'+am+'</div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 4:return'<div style="display:flex;justify-content:flex-end;margin-top:35px;"><div style="width:220px;background:'+cL+';border-radius:10px;padding:18px;text-align:center;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:.5px;">Amount Payable</div><div style="font-size:24px;font-weight:700;color:'+c+';margin-top:4px;">'+am+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 5:return'<div style="background:linear-gradient(135deg,'+c+','+cM+');color:#fff;margin:35px -50px 0;padding:28px 50px;text-align:right;"><div style="font-size:11px;text-transform:uppercase;opacity:.75;letter-spacing:.5px;">Grand Total</div><div style="font-size:30px;font-weight:700;margin-top:2px;">'+am+'</div></div><div style="margin:18px -50px 0;padding:10px 50px;background:rgba(0,0,0,.02);font-size:12px;color:#666;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 6:return'<div style="margin-top:35px;display:flex;gap:20px;"><div style="flex:1;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div><div style="text-align:right;"><div style="font-size:10px;color:#999;text-transform:uppercase;">Total</div><div style="font-size:26px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
-    case 7:return'<div style="margin-top:35px;text-align:right;"><div style="font-size:10px;color:#999;text-transform:uppercase;">Grand Total</div><div style="font-size:36px;font-weight:700;color:'+c+';margin-top:2px;line-height:1.1;">'+am+'</div></div><div style="margin-top:14px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
-    case 8:return'<div style="margin-top:35px;padding:18px;background:'+cL+';border-radius:8px;border-left:5px solid '+c+';display:flex;justify-content:space-between;align-items:center;"><div style="font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div><div style="text-align:right;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;">Total</div><div style="font-size:24px;font-weight:700;color:'+c+';">'+am+'</div></div></div>';
-    case 9:return'<div style="margin-top:35px;text-align:right;"><div style="display:inline-block;border:2px solid '+c+';border-radius:10px;padding:16px 28px;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">Grand Total</div><div style="font-size:28px;font-weight:700;color:'+c+';margin-top:4px;">'+am+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+wd+'</strong></div>';
+    case 0:return'<div style="background:'+c+';color:#fff;margin:35px -50px 0;padding:28px 50px;text-align:right;"><div style="font-size:11px;text-transform:uppercase;opacity:.7;letter-spacing:.5px;">Grand Total</div><div style="font-size:30px;font-weight:700;margin-top:2px;">'+as+'</div></div><div style="margin:18px -50px 0;padding:10px 50px;background:rgba(0,0,0,.03);font-size:12px;color:#666;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 1:return'<div style="text-align:right;margin-top:35px;"><div style="display:inline-block;background:#f5f5f5;padding:12px 22px;border-radius:6px;border-left:4px solid '+c+';"><div style="font-size:10px;color:#999;text-transform:uppercase;">Grand Total</div><div style="font-size:26px;font-weight:700;color:'+c+';margin-top:2px;">'+as+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 2:return'<div style="text-align:right;margin-top:35px;"><div style="border-top:2px solid '+c+';display:inline-block;padding-top:10px;"><span style="font-size:11px;color:#999;text-transform:uppercase;">Total Due: </span><span style="font-size:24px;font-weight:700;color:'+c+';">'+as+'</span></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 3:return'<div style="margin-top:35px;text-align:center;padding:20px;border:2px solid '+c+';border-radius:10px;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">Grand Total</div><div style="font-size:32px;font-weight:700;color:'+c+';margin-top:4px;">'+as+'</div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 4:return'<div style="display:flex;justify-content:flex-end;margin-top:35px;"><div style="width:220px;background:'+cL+';border-radius:10px;padding:18px;text-align:center;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:.5px;">Amount Payable</div><div style="font-size:24px;font-weight:700;color:'+c+';margin-top:4px;">'+as+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 5:return'<div style="background:linear-gradient(135deg,'+c+','+cM+');color:#fff;margin:35px -50px 0;padding:28px 50px;text-align:right;"><div style="font-size:11px;text-transform:uppercase;opacity:.75;letter-spacing:.5px;">Grand Total</div><div style="font-size:30px;font-weight:700;margin-top:2px;">'+as+'</div></div><div style="margin:18px -50px 0;padding:10px 50px;background:rgba(0,0,0,.02);font-size:12px;color:#666;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 6:return'<div style="margin-top:35px;display:flex;gap:20px;"><div style="flex:1;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div><div style="text-align:right;"><div style="font-size:10px;color:#999;text-transform:uppercase;">Total</div><div style="font-size:26px;font-weight:700;color:'+c+';">'+as+'</div></div></div>';
+    case 7:return'<div style="margin-top:35px;text-align:right;"><div style="font-size:10px;color:#999;text-transform:uppercase;">Grand Total</div><div style="font-size:36px;font-weight:700;color:'+c+';margin-top:2px;line-height:1.1;">'+as+'</div></div><div style="margin-top:14px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div>';
+    case 8:return'<div style="margin-top:35px;padding:18px;background:'+cL+';border-radius:8px;border-left:5px solid '+c+';display:flex;justify-content:space-between;align-items:center;"><div style="font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div><div style="text-align:right;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;">Total</div><div style="font-size:24px;font-weight:700;color:'+c+';">'+as+'</div></div></div>';
+    case 9:return'<div style="margin-top:35px;text-align:right;"><div style="display:inline-block;border:2px solid '+c+';border-radius:10px;padding:16px 28px;"><div style="font-size:10px;color:'+c+';text-transform:uppercase;letter-spacing:1px;">Grand Total</div><div style="font-size:28px;font-weight:700;color:'+c+';margin-top:4px;">'+as+'</div></div></div><div style="margin-top:16px;padding:8px 12px;background:#f8f9fa;border:1px dashed #ccc;border-radius:4px;font-size:12px;color:#555;">Rupees in words: <strong>'+aw+'</strong></div>';
     }
 }
 
+/* ---- Signature ---- */
 function gS(nm){
     return'<div style="margin-top:50px;width:240px;margin-left:auto;text-align:center;"><div style="border-top:1px solid #333;padding-top:4px;"><div style="font-size:12px;color:#555;font-weight:700;">Authorized Signatory</div><div style="font-size:10px;color:#999;margin-top:2px;">For '+nm+'</div></div></div>';
 }
 
+/* ---- History & Reset ---- */
 function upH(){
     const b=document.getElementById('hB'),k=Object.keys(db);
     if(!k.length){b.innerHTML='<div class="hist-t">No history</div>';return;}
