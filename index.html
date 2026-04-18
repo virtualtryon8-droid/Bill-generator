@@ -75,7 +75,34 @@
         .card .chk{position:absolute;top:4px;right:4px;width:17px;height:17px;background:#667eea;color:#fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;z-index:1;}
         .card.sel .chk{display:flex;}
         .grid-info{grid-column:1/-1;text-align:center;font-size:11px;color:#bbb;margin-top:2px;padding:4px 0;}
-        @media print{body{background:#fff;padding:0;}.wrap{display:block;}.side{display:none!important;}.prev{padding:0;background:#fff;}#cv{box-shadow:none;width:100%;min-height:auto;}.ov{display:none!important;}}
+
+        /* ===== PRINT STYLES: remove URL, timestamp, title from headers/footers ===== */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        @media print {
+            body {
+                background: #fff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .wrap { display: block !important; }
+            .side { display: none !important; }
+            .prev { padding: 0 !important; background: #fff !important; min-height: auto !important; }
+            #cv {
+                box-shadow: none !important;
+                width: 100% !important;
+                min-height: auto !important;
+                padding: 40px !important;
+                margin: 0 !important;
+            }
+            .ov { display: none !important; }
+            /* Extra safety: hide anything outside the canvas */
+            body > *:not(.wrap) { display: none !important; }
+        }
         @media(max-width:900px){.wrap{flex-direction:column;}.side{flex:none;position:static;width:100%;max-height:none;}#cv{width:100%;min-height:auto;padding:30px;}.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}.mdl{width:97%;max-height:90vh;}}
     </style>
 </head>
@@ -102,7 +129,7 @@
         <hr class="sep">
         <button class="btn btn-g" onclick="go()">Generate Bill</button>
         <button class="btn btn-t" id="tB" onclick="openM()">Choose Template</button>
-        <button class="btn btn-s" onclick="window.print()">Print / Save PDF</button>
+        <button class="btn btn-s" onclick="doPrint()">Print / Save PDF</button>
         <button class="btn btn-d" onclick="rst()">Reset Database</button>
         <div class="hist" id="hB"></div>
     </div>
@@ -300,6 +327,14 @@ function pick(id){
     closeM();go();
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeM();});
+
+/* ===== PRINT: strip title, then print ===== */
+function doPrint(){
+    var origTitle = document.title;
+    document.title = '';
+    window.print();
+    setTimeout(function(){ document.title = origTitle; }, 500);
+}
 
 /* ===== GENERATE ===== */
 function go(){
