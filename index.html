@@ -75,6 +75,21 @@
         .card.sel .chk{display:flex;}
         .grid-info{grid-column:1/-1;text-align:center;font-size:11px;color:#bbb;margin-top:2px;padding:4px 0;}
         .a5-label{position:absolute;top:6px;right:6px;background:rgba(102,126,234,.08);color:#667eea;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 6px;border-radius:3px;pointer-events:none;z-index:1;}
+
+        /* Print guide overlay */
+        .pguide{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+        .pguide.on{display:flex;}
+        .pguide-box{background:#fff;border-radius:16px;padding:32px 36px;max-width:440px;width:90%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4);}
+        .pguide-box h3{font-size:18px;color:#2c3e50;margin-bottom:6px;}
+        .pguide-box .sub{font-size:13px;color:#888;margin-bottom:20px;}
+        .pguide-steps{text-align:left;margin-bottom:24px;}
+        .pguide-steps div{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;font-size:13px;color:#444;line-height:1.5;}
+        .pguide-steps .num{flex-shrink:0;width:26px;height:26px;background:#667eea;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+        .pguide-steps .num.warn{background:#e74c3c;}
+        .pguide-steps strong{color:#e74c3c;}
+        .pguide-btn{display:inline-block;padding:12px 36px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 15px rgba(102,126,234,.3);}
+        .pguide-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(102,126,234,.4);}
+
         @media(max-width:900px){
             .wrap{flex-direction:column;}
             .side{flex:none;position:static;width:100%;max-height:none;}
@@ -107,7 +122,7 @@
         <hr class="sep">
         <button class="btn btn-g" onclick="go()">Generate Bill</button>
         <button class="btn btn-t" id="tB" onclick="openM()">Choose Template</button>
-        <button class="btn btn-s" onclick="doPrint()">Print / Save PDF</button>
+        <button class="btn btn-s" onclick="showGuide()">Print / Save PDF</button>
         <button class="btn btn-d" onclick="rst()">Reset Database</button>
         <div class="hist" id="hB"></div>
     </div>
@@ -118,6 +133,21 @@
         <div class="mdl-h"><h3>Select Template Style<small>10,100 templates</small></h3><button class="mdl-x" onclick="closeM()">&times;</button></div>
         <div class="mdl-s"><input type="text" id="tS" placeholder="Search templates... (e.g. Indigo, Royal, Classic)" oninput="flt(this.value)"></div>
         <div class="mdl-b"><div class="grid" id="tG"></div></div>
+    </div>
+</div>
+
+<!-- Print Guide Modal -->
+<div class="pguide" id="pGuide">
+    <div class="pguide-box">
+        <h3>Before You Print</h3>
+        <p class="sub">Follow these steps to get a clean bill without extra text</p>
+        <div class="pguide-steps">
+            <div><span class="num">1</span><span>Click the button below to open the print window</span></div>
+            <div><span class="num">2</span><span>In the print dialog, click <strong>"More settings"</strong></span></div>
+            <div><span class="num warn">3</span><span><strong>UNCHECK "Headers and footers"</strong> &mdash; this removes the date, URL and page number</span></div>
+            <div><span class="num">4</span><span>Click Print or Save as PDF</span></div>
+        </div>
+        <button class="pguide-btn" onclick="doPrint()">Open Print Window</button>
     </div>
 </div>
 
@@ -164,35 +194,41 @@ function doFlt(q){var g=document.getElementById('tG');g.innerHTML='';q=q.toLower
 function openM(){document.getElementById('mO').classList.add('on');document.getElementById('tS').value='';buildG();document.getElementById('tS').focus();}
 function closeM(){document.getElementById('mO').classList.remove('on');}
 function pick(id){sel=id;var cards=document.querySelectorAll('.card');for(var i=0;i<cards.length;i++)cards[i].classList.remove('sel');var t=document.querySelector('.card[data-id="'+id+'"]');if(t)t.classList.add('sel');document.getElementById('tB').textContent='\u2713 '+getT(id).nm;closeM();go();}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeM();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeM();document.getElementById('pGuide').classList.remove('on');}});
 
-function doPrint(){
+function showGuide(){
     var cv=document.getElementById('cv');
     if(cv.querySelector('[style*="justify-content:center"]')&&cv.querySelectorAll('table').length===0){alert('Generate a bill first.');return;}
+    document.getElementById('pGuide').classList.add('on');
+}
+
+function doPrint(){
+    document.getElementById('pGuide').classList.remove('on');
+
+    var cv=document.getElementById('cv');
     var ff=cv.style.fontFamily||"'Poppins', sans-serif";
     var bill=cv.innerHTML.replace(/<span class="a5-label">A5<\/span>/,'');
 
-    /* Build print HTML with maximum header/footer suppression */
+    /* Zero margins — full A5 page usable, no content gets cut */
+    /* Small white cover strips hide any residual header/footer bleed */
     var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title></title>'+
     '<link rel="preconnect" href="https://fonts.googleapis.com">'+
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'+
     '<link href="'+FONT_LINK+'" rel="stylesheet">'+
     '<style>'+
-    /* Negative margins push header/footer OFF the paper */
-    '@page{size:A5;margin:-30mm -10mm -30mm -10mm;}'+
+    '@page{size:A5;margin:0;}'+
     '*{margin:0;padding:0;box-sizing:border-box;}'+
-    'html,body{width:100%;height:100%;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;overflow:hidden;}'+
-    '.bill{width:148mm;min-height:210mm;padding:24px;background:#fff;margin:0 auto;font-family:'+ff+';display:flex;flex-direction:column;position:relative;}'+
-    /* Two massive white divs cover any bleeding header/footer text */
-    '.cv-top{position:fixed;top:-60mm;left:-50mm;right:-50mm;height:60mm;background:#fff;z-index:99999;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
-    '.cv-bot{position:fixed;bottom:-60mm;left:-50mm;right:-50mm;height:60mm;background:#fff;z-index:99999;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    'html,body{width:100%;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    /* Tiny white strips at page edges — covers header/footer text that bleeds in */
+    '.cv-top{position:fixed;top:-2mm;left:-10mm;right:-10mm;height:7mm;background:#fff;z-index:99999;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    '.cv-bot{position:fixed;bottom:-2mm;left:-10mm;right:-10mm;height:7mm;background:#fff;z-index:99999;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    '.bill{width:148mm;min-height:210mm;padding:20px;background:#fff;margin:0 auto;font-family:'+ff+';display:flex;flex-direction:column;}'+
     '</style></head><body>'+
     '<div class="cv-top"></div>'+
     '<div class="cv-bot"></div>'+
     '<div class="bill">'+bill+'</div>'+
     '</body></html>';
 
-    /* Use blob URL — avoids "about:blank" showing in header */
     var blob=new Blob([html],{type:'text/html;charset=utf-8'});
     var blobUrl=URL.createObjectURL(blob);
     var pw=window.open(blobUrl,'_blank');
